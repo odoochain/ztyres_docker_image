@@ -1,0 +1,40 @@
+<odoo>
+  <data>
+    <record id="sale_approve.view_order_form_inherit_sale_approve" model="ir.ui.view">
+      <field name="name">Sale Approve</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form" />
+      <field name="arch" type="xml">
+        <xpath expr="/form/*" position="after">
+          <header>
+            <button name="sale_shipment_state_done" type="object" string="Confirmación de Embarque" statusbar_visible='draft'/>
+            <field name='shipment_state' widget="statusbar" statusbar_visible='done'/>
+          </header>
+        </xpath>
+        <xpath expr="/form/*" position="after">
+          <header>
+            <button name="sale_approve_state_draft" type="object" string="Validación Gte. Vtas" statusbar_visible='draft'/>
+            <button name="sale_approve_state_done" type="object" string="Crédito y Cobranza" statusbar_visible='done'/>
+            <button name="sale_approve_state_confirm" type="object" string="Anticipado" attrs="{'invisible': [('payment_term_days', '!=', 0)]}"  statusbar_visible='comfirm'/>
+            <field name='approve_state' widget="statusbar" states="draft,done,confirm"/>
+          </header>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="sale_approve.view_order_tree_inherit_sale_approve" model="ir.ui.view">
+      <field name="name">Sale Tree</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_tree" />
+      <field name="arch" type="xml">
+        <xpath expr="//tree/field[@name='partner_id']" position="after">
+          <field name="payment_term_days"/>
+          <field name="approve_state" />
+          <field name="shipment_state" />
+        </xpath>
+      </field>
+    </record>
+
+    
+  </data>
+</odoo>
