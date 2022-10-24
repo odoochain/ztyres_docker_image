@@ -1,0 +1,17 @@
+version: '2'
+services:
+  odoo14_ee_ztyres:
+    container_name: odoo14_ee_ztyres
+    image: odoo14ce
+    user: odoo
+    ports:
+      - "8069:8069" # Normal Port
+      - "8090:8090" # Testing Port
+      - "8071:8071" # Longpolling Port
+      - "8001:8001" # Debug Port
+    tty: true
+    # command: --
+    volumes:
+      - ./etc:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons
+    restart: always
