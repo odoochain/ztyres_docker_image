@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api,_
+from odoo.exceptions import ValidationError
 
 class Sale(models.Model):
     _inherit = 'sale.order'
@@ -44,6 +45,10 @@ class Sale(models.Model):
                 result = True                     
             record.ready_to_shipment_validation = result
 
+    def action_confirm(self):
+        if self.shipment_state not in ['done']:
+            raise ValidationError(_("Necesita tener la Aprobación de Embarques para poder ser confirmada."))
+        return super(Sale, self).action_confirm()
 
 
 
