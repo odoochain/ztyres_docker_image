@@ -31,13 +31,6 @@
         <record id="manager_access" model="res.groups">
             <field name="name">Todas las aprobaciones</field>
             <field name="category_id" ref="sale_approve_management"/>
-            <field name="implied_ids" 
-            eval="[
-            (4, ref('sale_approve.management_approve')),
-            (4, ref('sale_approve.credit_and_collection_approves')),
-            (4, ref('sale_approve.advance_payments_approved')),
-            (4, ref('sale_approve.shipments_approve'))
-            ]"/>
         </record>
 
     </data>
