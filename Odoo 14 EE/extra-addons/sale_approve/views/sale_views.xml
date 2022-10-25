@@ -22,7 +22,7 @@
 
         <field name='payment_term_id' position='before'>
           <field name='payment_term_days' invisible='1'/>
-          <field name='ready_to_shipment_validation' invisible='0'/>
+          <field name='ready_to_shipment_validation' invisible='1'/>
         </field>
       </field>
     </record>
