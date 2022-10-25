@@ -30,7 +30,7 @@
     <record id="sale_approve.view_order_tree_inherit_sale_approve" model="ir.ui.view">
       <field name="name">Sale Tree</field>
       <field name="model">sale.order</field>
-      <field name="inherit_id" ref="sale.view_order_tree" />
+      <field name="inherit_id" ref="sale.view_quotation_tree" />
       <field name="arch" type="xml">
         <xpath expr="//tree/field[@name='partner_id']" position="after">
           <field name="payment_term_days" />
