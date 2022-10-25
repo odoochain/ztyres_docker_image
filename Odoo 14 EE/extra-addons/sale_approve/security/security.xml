@@ -4,7 +4,7 @@
 
         <record model="ir.module.category" id="sale_approve_management">
             <field name="name">Aprobación de Ventas</field>
-            <field name="description">User access levels for Overtime module</field>
+            <field name="description">Permisos para el flujo de aprobaciones del módulo de Ventas.</field>
             <field name="sequence">10</field>
         </record>
 
