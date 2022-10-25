@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Aprobación de Ventas",
+    'name': "Modificaciones de Contabilidad",
 
     'summary': """
-        Módulo para realizar confirmación en varios pasos""",
+        Se agregaron en este módulo algunas personalizaciones del módulo nativo de Odoo
+        account.
+        """,
 
     'description': """
         Long description of module's purpose
@@ -19,14 +21,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale'],
+    'depends': ['account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'security/security.xml',
-        'views/sale_views.xml',
-        
+        'views/parameter_reset_invoice_sequence.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

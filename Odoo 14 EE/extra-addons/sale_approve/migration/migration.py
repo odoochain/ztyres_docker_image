@@ -26,4 +26,4 @@ for record in all_sale_objects:
     print('%s de %s'%(count,total))
 
 ##  python3 -m ptvsd --host localhost --port 5678 /usr/bin/odoo --config /etc/odoo/odoo.conf --xmlrpc-port=8001 --workers=0 -u sale_approve
-##  /usr/bin/odoo shell -d Z_TEST --config /etc/odoo/odoo.conf --xmlrpc-port=8001
+##  /usr/bin/odoo shell -d SALE_APPROVE_TEST --config /etc/odoo/odoo.conf --xmlrpc-port=8001
