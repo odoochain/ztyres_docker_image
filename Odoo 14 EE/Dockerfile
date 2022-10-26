@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
 # Generate locale C.UTF-8 for postgres and general locale data
 ENV LANG C.UTF-8
-
+RUN echo "deb http://ftp.de.debian.org/debian buster main" | tee -a /etc/apt/sources.list && apt-get update
 # Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -32,10 +32,19 @@ RUN apt-get update && \
         python3-xlrd \
         python3-xlwt \
         xz-utils \
+        build-essential \
     && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb \
     && echo 'ea8277df4297afc507c61122f3c349af142f31e5 wkhtmltox.deb' | sha1sum -c - \
     && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
     && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
+
+# upgrade pip version
+RUN pip3 install --upgrade pip
+
+# install custom libraries version from requeriments.txt
+COPY ./requeriments.txt requeriments.txt
+RUN pip3 install -r requirements.txt
+
 
 # install latest postgresql-client
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
@@ -61,6 +70,8 @@ ARG ODOO_SHA=f938f53b8c9de5bb941bffbca1eb4d6bf44fa314
 RUN apt-get update \
     && apt-get -y install --no-install-recommends ./odoo.deb \
     && rm -rf /var/lib/apt/lists/* odoo.deb
+
+RUN rm requeriments.txt
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
