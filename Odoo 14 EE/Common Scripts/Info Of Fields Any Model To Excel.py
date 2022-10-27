@@ -18,5 +18,8 @@ for field in fields:
     data.append(record)
 # Creates DataFrame.  
 df = pd.DataFrame(data)  
-# Print the data  
-print(df)  
+# df = pd.DataFrame(df, columns = ['Product', 'Price'])
+df.to_excel('export_dataframe.xlsx', index = False, header=True)
+#Set permisions of read and write to avoid errors.
+
+
