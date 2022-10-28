@@ -25,7 +25,7 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/account_views.xml',
-        'views/account_views.xml',
+        'views/sale_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
