@@ -24,7 +24,7 @@
         </record>
 
         <record id="shipments_approve" model="res.groups">
-            <field name="name">Confirmación de Embarques</field>
+            <field name="name">Confirmación de Embarque</field>
             <field name="category_id" ref="sale_approve_management" />
         </record>
 

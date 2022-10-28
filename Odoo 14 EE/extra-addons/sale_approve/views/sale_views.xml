@@ -5,24 +5,21 @@
       <field name="model">sale.order</field>
       <field name="inherit_id" ref="sale.view_order_form" />
       <field name="arch" type="xml">
+        
         <xpath expr="/form/*" position="after">
           <header>
-            <button name="sale_shipment_state_done" type="object" string="Confirmación de Embarque" attrs="{'invisible': [('ready_to_shipment_validation', 'not in',[True])]}" groups="sale_approve.shipments_approve,sale_approve.manager_access"/>
-            <field name='shipment_state' widget="statusbar" attrs="{'invisible': [('shipment_state', 'in',['draft'])]}" />
-          </header>
-        </xpath>
-        <xpath expr="/form/*" position="after">
-          <header>
-            <button name="sale_approve_state_draft" type="object" string="Validación Gte. Vtas" attrs="{'invisible': [('approve_state', 'in',['draft','done','confirm'])]}" groups="sale_approve.management_approve,sale_approve.manager_access"/>
+            <button name="sale_approve_state_draft" type="object" string="Validación Gte. Vtas" attrs="{'invisible': [('approve_state', 'in',['draft','done','confirm'])]}" groups="sale_approve.management_approve,sale_approve.manager_access" />
             <button name="sale_approve_state_done" type="object" string="Crédito y Cobranza" attrs="{'invisible': [('approve_state', 'in',['done','confirm',False])]}" groups="sale_approve.credit_and_collection_approves,sale_approve.manager_access" />
-            <button name="sale_approve_state_confirm" type="object" string="Anticipado" attrs="{'invisible': ['|',('payment_term_days', '!=', 0),('approve_state', 'in',['draft','confirm',False])]}" groups="sale_approve.advance_payments_approved,sale_approve.manager_access"/>
-            <field name='approve_state' widget="statusbar" statusbar_visible="draft,done,confirm" />
+            <button name="sale_approve_state_confirm" type="object" string="Anticipado" attrs="{'invisible': ['|',('payment_term_days', '!=', 0),('approve_state', 'in',['draft','confirm',False])]}" groups="sale_approve.advance_payments_approved,sale_approve.manager_access" />
+            <field name="approve_state" widget="statusbar" statusbar_visible="draft,done,confirm" />
+            <button name="sale_shipment_state_done" type="object" string="Confirmación de Embarque" attrs="{'invisible': [('ready_to_shipment_validation', 'not in',[True])]}" groups="sale_approve.shipments_approve,sale_approve.manager_access" />
+            <field name="shipment_state" widget="statusbar" attrs="{'invisible': [('shipment_state', 'in',['draft'])]}" />
           </header>
         </xpath>
 
         <field name='payment_term_id' position='before'>
-          <field name='payment_term_days' invisible='1'/>
-          <field name='ready_to_shipment_validation' invisible='1'/>
+          <field name='payment_term_days' invisible='1' />
+          <field name='ready_to_shipment_validation' invisible='1' />
         </field>
       </field>
     </record>
@@ -39,5 +36,7 @@
         </xpath>
       </field>
     </record>
+
+    
   </data>
 </odoo>
