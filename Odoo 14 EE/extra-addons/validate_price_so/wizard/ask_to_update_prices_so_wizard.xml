@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="ask_to_update_prices_so_wizard_view" model="ir.ui.view">
+        <field name="name">ask.to.update.prices.so.wizard.view</field>
+        <field name="model">ask.to.update.prices.so</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form> 
+                <p>Los productos en el pedido tienen el precio desactualizado</p>
+                <p>¿Desea actualizar o continuar con la confirmación del pedido?</p>
+                <footer>
+                    <button name="confirm" string="Confirmar pedido" type="object" class="oe_highlight"/>
+                    <button name="update" string="Actualizar precios" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

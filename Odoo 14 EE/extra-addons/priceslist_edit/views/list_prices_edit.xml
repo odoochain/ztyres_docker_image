@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_sale_pricelist_readonly" model="res.groups">
+        <field name="name">Sale Pricelist Edit</field>
+        <field name="category_id" ref="base.module_category_sales_sales"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="form_view_sale_order_price_list_readonly" model="ir.ui.view">
+        <field name="name">Form View Sale Order Price List Readonly</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <field name="pricelist_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+             </field>
+        </field>
+    </record>
+
+    <record id="form_view_sale_order_price_list_edit" model="ir.ui.view">
+        <field name="name">Form View Sale Order Price List Edit</field>
+        <field name="model">sale.order</field>
+        <field name="groups_id" eval="[(4, ref('group_sale_pricelist_readonly'))]" />
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <field name="pricelist_id" position="attributes">
+                <attribute name="readonly">0</attribute>
+             </field>
+        </field>
+    </record>
+
+</odoo>

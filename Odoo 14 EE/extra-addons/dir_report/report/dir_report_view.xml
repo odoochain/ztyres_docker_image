@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="dir_report_wizard" model="ir.ui.view">
+        <field name="name">dir.report.view</field>
+        <field name="model">dir.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <p>Obtener Reporte de Dirección</p>
+                </group>
+                <footer>
+                    <button name="action_xlsx" type="object" string="Excel" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dir_report" model="ir.actions.act_window">
+        <field name="name">Reporte de Dirección</field>
+        <field name="res_model">dir.report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+    <menuitem id="dir_report" sequence="30" name="Dir Report" parent="stock.menu_warehouse_report" action="action_dir_report"/> 
+</odoo>
