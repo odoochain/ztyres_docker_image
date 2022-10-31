@@ -29,7 +29,8 @@ class Sale(models.Model):
         for record in self:
             record.shipment_state = 'draft'
             for picking in record.picking_ids:
-                picking.shipment_state = record.shipment_state       
+                if picking.state in ['done','assigned']:
+                    picking.shipment_state = record.shipment_state       
 
 
     def sale_shipment_state_done(self):
@@ -54,8 +55,8 @@ class Sale(models.Model):
             record.ready_to_shipment_validation = result
 
     def action_confirm(self):
-        if self.shipment_state not in ['done']:
-            raise ValidationError(_("Necesita tener la Aprobación de Embarque para poder ser confirmada."))
+        if self.ready_to_shipment_validation not in [True]:
+            raise ValidationError(_("Necesita tener las aprobaciones previas para poder ser confirmada."))
         return super(Sale, self).action_confirm()
 
 
