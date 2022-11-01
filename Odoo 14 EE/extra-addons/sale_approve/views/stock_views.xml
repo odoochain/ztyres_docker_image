@@ -14,7 +14,7 @@
                 </xpath>
 
                 <xpath expr="//tree" position="attributes">
-                    <attribute name="decoration-info">shipment_state == 'draft' and state in ['assigned'] and sale_is_set == True</attribute>
+                    <attribute name="decoration-info">shipment_state == 'done' and state in ['assigned'] and sale_is_set == True</attribute>
                     <attribute name="decoration-success">shipment_state == 'done' and state in ['assigned','done']</attribute>
                 </xpath>
             </field>
