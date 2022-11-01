@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<odoo>
-    <data>
-        <record id="reset_invoice_sequence" model="ir.config_parameter">
-            <field name="key">reset_invoices_sequence</field>
-            <field name="value">never</field>
-        </record>
-    </data>
-</odoo>

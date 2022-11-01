@@ -27,7 +27,6 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/parameter_reset_invoice_sequence.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
