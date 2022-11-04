@@ -22,22 +22,20 @@ class Sale(models.Model):
     def sale_approve_state_confirm(self):
         for record in self:
             record.approve_state = 'confirm'
-
-
-
-    def sale_shipment_state_draft(self):
+    
+    def approve_all(self):
         for record in self:
-            record.shipment_state = 'draft'
-            for picking in record.picking_ids:
-                if picking.state in ['done','assigned']:
-                    picking.shipment_state = record.shipment_state       
+            if not record.payment_term_days!=0:
+                record.approve_state = 'confirm'
+            else:
+                record.approve_state = 'done'
+            record.shipment_state = 'done'
+
 
 
     def sale_shipment_state_done(self):
         for record in self:
-            record.shipment_state = 'done'  
-            for picking in record.picking_ids:
-                picking.shipment_state = record.shipment_state         
+            record.shipment_state = 'done'     
     
     def _compute_payment_term_days(self):
         for record in self:
@@ -54,10 +52,10 @@ class Sale(models.Model):
                 result = True                     
             record.ready_to_shipment_validation = result
 
-    def action_confirm(self):
-        if self.ready_to_shipment_validation not in [True]:
-            raise ValidationError(_("Necesita tener las aprobaciones previas para poder ser confirmada."))
-        return super(Sale, self).action_confirm()
+    # def action_confirm(self):
+    #     if self.ready_to_shipment_validation not in [True]:
+    #         raise ValidationError(_("Necesita tener las aprobaciones previas para poder ser confirmada."))
+    #     return super(Sale, self).action_confirm()
 
 
 
