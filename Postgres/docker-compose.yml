@@ -7,6 +7,7 @@ services:
     volumes: 
       - ./postgres_data/pgdata:/var/lib/postgresql/data/pgdata
     environment:
+      - POSTGRES_DB=postgres
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_PASSWORD=58877216/Abca1373
-      - POSTGRES_USER=odoo14
+      - POSTGRES_USER=odoo
