@@ -1,5 +1,7 @@
 Postgres/postgres_data
+Filestore
 Odoo 14 EE/out_files
+PostgresData
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
