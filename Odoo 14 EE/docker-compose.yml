@@ -12,7 +12,6 @@ services:
     tty: true
     # command: --
     volumes:
-      - odoo-web-data-filestore
       - ./etc:/etc/odoo
       - ./extra-addons:/mnt/extra-addons
       - ./out_files:/mnt/out_files

@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM ubuntu:20.04
 MAINTAINER Odoo S.A. <info@odoo.com>
 
 COPY ./odoo_14.0+e.latest_all.deb odoo.deb
@@ -6,10 +6,11 @@ SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
 # Generate locale C.UTF-8 for postgres and general locale data
 ENV LANG C.UTF-8
-RUN echo "deb http://ftp.de.debian.org/debian buster main" | tee -a /etc/apt/sources.list && apt-get update
+#RUN echo "deb http://ftp.de.debian.org/debian buster main" | tee -a /etc/apt/sources.list && apt-get update
 # Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive\
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
         dirmngr \
@@ -33,30 +34,25 @@ RUN apt-get update && \
         python3-xlwt \
         xz-utils \
         build-essential \
-    && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb \
-    && echo 'ea8277df4297afc507c61122f3c349af142f31e5 wkhtmltox.deb' | sha1sum -c - \
-    && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
+    && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ./wkhtmltox.deb \
     && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
 
+RUN  apt-get update && apt-get install software-properties-common -y
+RUN add-apt-repository universe
+RUN add-apt-repository multiverse
+
+RUN apt-get install libcurl4-openssl-dev libssl-dev -y
 # upgrade pip version
 RUN pip3 install --upgrade pip
-
 # install custom libraries version from requeriments.txt
 COPY ./requeriments.txt requeriments.txt
 RUN pip3 install -r requeriments.txt
+RUN pip3 install pyopenssl --upgrade
 
 
 # install latest postgresql-client
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
-    && GNUPGHOME="$(mktemp -d)" \
-    && export GNUPGHOME \
-    && repokey='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8' \
-    && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "${repokey}" \
-    && gpg --batch --armor --export "${repokey}" > /etc/apt/trusted.gpg.d/pgdg.gpg.asc \
-    && gpgconf --kill all \
-    && rm -rf "$GNUPGHOME" \
-    && apt-get update  \
-    && apt-get install --no-install-recommends -y postgresql-client \
+RUN apt-get install --no-install-recommends -y postgresql-client-12 \
     && rm -f /etc/apt/sources.list.d/pgdg.list \
     && rm -rf /var/lib/apt/lists/*
 
@@ -78,11 +74,16 @@ COPY ./entrypoint.sh /
 COPY ./etc/odoo.conf /etc/odoo/
 
 # Set permissions and Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
-RUN chown odoo /etc/odoo/odoo.conf \
+RUN chown odoo:odoo /etc/odoo/odoo.conf \
     && mkdir -p /mnt/extra-addons \
-    && chown -R odoo /mnt/extra-addons \
+    && chown -R odoo:odoo /mnt/extra-addons \
+    && chmod 777 -R /mnt/extra-addons \    
     && mkdir -p /mnt/out_files \
-    && chown -R odoo /mnt/out_files    
+    && chmod 777 -R /mnt/out_files \
+    && chown -R odoo:odoo /mnt/out_files \
+    && chown -R odoo:odoo /var/lib/odoo \
+    && chmod 777 -R /var/lib/odoo \
+    && chmod 777 -R /usr/lib/python3/dist-packages/odoo/addons
 VOLUME ["/etc/odoo","/var/lib/odoo","/mnt/extra-addons","/mnt/out_files"]
 
 # Expose Odoo services
