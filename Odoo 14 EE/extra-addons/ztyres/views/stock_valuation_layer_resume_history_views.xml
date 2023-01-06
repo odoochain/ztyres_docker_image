@@ -62,6 +62,7 @@
             </field>
         </record>
 
+
         <record id="svl_history_action" model="ir.actions.act_window">
             <field name="name">Valoración de Inventario Histórico</field>
             <field name="res_model">stock.valuation.layer.resume.history</field>
