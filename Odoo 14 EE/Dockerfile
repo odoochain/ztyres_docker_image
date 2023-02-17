@@ -84,11 +84,12 @@ RUN chown odoo:odoo /etc/odoo/odoo.conf \
     && chmod 777 -R /mnt/out_files \
     && chown -R odoo:odoo /mnt/out_files \
     && chown -R odoo:odoo /var/lib/odoo \
-    && chown -R odoo:odoo /usr/local/lib/python3.10/dist-packages/pandas \
-    && chmod 777 -R /usr/local/lib/python3.10/dist-packages/pandas 
+    && chown -R root:root /usr/local/lib/python3.10/dist-packages/pandas \
+    && chmod 755 -R /usr/local/lib/python3.10/dist-packages/pandas 
     
 VOLUME ["/etc/odoo","/var/lib/odoo","/mnt/extra-addons","/mnt/out_files"]
 RUN chmod 777 -R /var/lib/odoo
+RUN pip3 install -U  pandas
 # RUN chmod 777 -R /usr/lib/python3/dist-packages/odoo/addons
 # Expose Odoo services
 EXPOSE 8069 8071 8072
