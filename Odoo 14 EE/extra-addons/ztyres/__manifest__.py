@@ -26,7 +26,8 @@
         ],
     },
     # any module necessary for this one to work correctly
-    'depends': ['mail', 'stock', 'product', 'contacts', 'base', 'sale', 'sale_management', 'account', 'l10n_mx_edi'],
+    # 'l10n_mx_edi'
+    'depends': ['mail', 'stock', 'product', 'base', 'sale', 'sale_management', 'account'],
     'application': False,
     'installable': True,
     'auto_install': False,
@@ -37,16 +38,14 @@
 
     # always loaded
     'data': [
-        'data/stock.production.lot.week.csv',
-        'data/stock.production.lot.year.csv',
-        'security/security.xml',
-        'security/ir.model.access.csv',
+        # 'security/security.xml',
+        # 'security/ir.model.access.csv',
         'views/account_move.xml',
         'views/account_views.xml',
         #'views/res_partner_views.xml',
         'views/sale_order_report.xml',
         'views/sale_views.xml',
-        'views/stock_production_lot_views.xml',
+        # 'views/stock_production_lot_views.xml',
         'wizard/denied_confirm_sale.xml',
         'wizard/merge_quotations.xml',
         #'views/stock_picking_views.xml',

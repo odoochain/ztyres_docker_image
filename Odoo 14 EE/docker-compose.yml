@@ -1,8 +1,8 @@
 version: '2'
 services:
-  odoo14_ee_ztyres:
-    container_name: odoo14_ee_ztyres
-    image: jrmpacheco/odoo14_ee_ztyres:latest
+  odoo16_ee_ztyres:
+    container_name: odoo16_ee_ztyres
+    image: odoo16_ee_ztyres:latest
     user: odoo
     ports:
       - "8069:8069" # Normal Port

@@ -2,3 +2,8 @@ ptvsd
 openpyxl==3.0.10
 pandas
 pyOpenSSL==19.0.0
+python-decouple
+html5lib
+pyzbar
+pdf2image
+hermetrics

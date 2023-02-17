@@ -2,6 +2,7 @@ FROM ubuntu:22.04
 MAINTAINER Odoo S.A. <info@odoo.com>
 
 COPY ./odoo_16.0+e.latest_all.deb odoo.deb
+COPY ./postgresql-client-12_12.2-4_amd64.deb postgres-12.2.deb
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
 # Generate locale C.UTF-8 for postgres and general locale data
@@ -30,7 +31,9 @@ RUN DEBIAN_FRONTEND=noninteractive\
         python3-watchdog \
         python3-xlrd \
         python3-xlwt \
-        xz-utils
+        xz-utils \
+        zbar-tools \
+        poppler-utils
 
  
 RUN  curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb \
@@ -47,13 +50,15 @@ RUN pip3 install --upgrade pip
 # install custom libraries version from requeriments.txt
 COPY ./requeriments.txt requeriments.txt
 RUN pip3 install -r requeriments.txt
+RUN rm -R /usr/local/lib/python3.10/dist-packages/pandas
+COPY ./python3.10/custom/pandas /usr/local/lib/python3.10/dist-packages/pandas
 # RUN pip3 install pyopenssl --upgrade
 
 
-# install latest postgresql-client
-RUN apt-get install --no-install-recommends -y postgresql-client-12 \
-    && rm -f /etc/apt/sources.list.d/pgdg.list \
-    && rm -rf /var/lib/apt/lists/*
+# # install latest postgresql-client
+# RUN apt-get install --no-install-recommends -y postgresql-client-12 \
+#     && rm -f /etc/apt/sources.list.d/pgdg.list \
+#     && rm -rf /var/lib/apt/lists/*
 
 # Install rtlcss (on Debian buster)
 RUN npm install -g rtlcss
@@ -62,9 +67,10 @@ RUN npm install -g rtlcss
 RUN apt-get update \
     && apt-get -y install --no-install-recommends ./odoo.deb \
     && rm -rf /var/lib/apt/lists/* odoo.deb
-
-RUN rm requeriments.txt
-
+    
+RUN apt-get update \
+    && apt-get -y install --no-install-recommends ./postgres-12.2.deb \
+    && rm -rf /var/lib/apt/lists/* postgres-12.2.deb
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
 COPY ./etc/odoo.conf /etc/odoo/
@@ -78,10 +84,12 @@ RUN chown odoo:odoo /etc/odoo/odoo.conf \
     && chmod 777 -R /mnt/out_files \
     && chown -R odoo:odoo /mnt/out_files \
     && chown -R odoo:odoo /var/lib/odoo \
-    && chmod 777 -R /var/lib/odoo \
-    && chmod 777 -R /usr/lib/python3/dist-packages/odoo/addons
+    && chown -R odoo:odoo /usr/local/lib/python3.10/dist-packages/pandas \
+    && chmod 777 -R /usr/local/lib/python3.10/dist-packages/pandas 
+    
 VOLUME ["/etc/odoo","/var/lib/odoo","/mnt/extra-addons","/mnt/out_files"]
-
+RUN chmod 777 -R /var/lib/odoo
+# RUN chmod 777 -R /usr/lib/python3/dist-packages/odoo/addons
 # Expose Odoo services
 EXPOSE 8069 8071 8072
 

@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-ask_to_update_prices_so,ask.to.update.prices.so,model_ask_to_update_prices_so,,1,1,1,1
