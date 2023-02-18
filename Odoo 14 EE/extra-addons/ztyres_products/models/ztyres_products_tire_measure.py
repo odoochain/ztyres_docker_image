@@ -6,7 +6,7 @@ class TireMeasure(models.Model):
     _name = "ztyres_products.tire_measure"
     _description = "Medida"
 
-    width_id = fields.Many2one("ztyres_products.width", string="Ancho", ondelete="restrict")
+    width_id = fields.Many2one("ztyres_products.width", string="Ancho")
     separator_id = fields.Many2one("ztyres_products.separator", string="Separador")
     profile_id = fields.Many2one("ztyres_products.profile", string="Perfil")
     rim_id = fields.Many2one("ztyres_products.rim", string="Rin")
