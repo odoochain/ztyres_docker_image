@@ -48,7 +48,7 @@ class SvlHistory(models.Model):
             record.total_count = sum(record.svl_resume_ids.mapped('quantity') )        
     
 
-    svl_resume_ids = fields.One2many('stock.valuation.layer.resume.line', inverse_name='svl_resume_history_id')
+    svl_resume_ids = fields.One2many('stock.valuation.layer.resume.line', inverse_name='svl_resume_history_id',ondelete='cascade')
     
     inventory_datetime = fields.Datetime(required=True)
     value_total = fields.Float(compute='_compute_value_total',store=True)
