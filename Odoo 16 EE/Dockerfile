@@ -39,28 +39,13 @@ RUN DEBIAN_FRONTEND=noninteractive\
 RUN  curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ./wkhtmltox.deb \
 && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
-
-# RUN  apt-get update && apt-get install software-properties-common -y
-# RUN add-apt-repository universe
-# RUN add-apt-repository multiverse
-
-# RUN apt-get install libcurl4-openssl-dev libssl-dev -y
-# upgrade pip version
 RUN pip3 install --upgrade pip
 # install custom libraries version from requeriments.txt
 COPY ./requeriments.txt requeriments.txt
 RUN pip3 install -r requeriments.txt
 RUN rm -R /usr/local/lib/python3.10/dist-packages/pandas
 COPY ./python3.10/custom/pandas /usr/local/lib/python3.10/dist-packages/pandas
-# RUN pip3 install pyopenssl --upgrade
 
-
-# # install latest postgresql-client
-# RUN apt-get install --no-install-recommends -y postgresql-client-12 \
-#     && rm -f /etc/apt/sources.list.d/pgdg.list \
-#     && rm -rf /var/lib/apt/lists/*
-
-# Install rtlcss (on Debian buster)
 RUN npm install -g rtlcss
 
 # Install Odoo
@@ -90,7 +75,7 @@ RUN chown odoo:odoo /etc/odoo/odoo.conf \
 VOLUME ["/etc/odoo","/var/lib/odoo","/mnt/extra-addons","/mnt/out_files"]
 RUN chmod 777 -R /var/lib/odoo
 RUN pip3 install -U  pandas==1.5.2
-# RUN chmod 777 -R /usr/lib/python3/dist-packages/odoo/addons
+
 # Expose Odoo services
 EXPOSE 8069 8071 8072
 

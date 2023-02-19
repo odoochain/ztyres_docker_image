@@ -1,13 +1,15 @@
 version: '2'
 services:
   postgres:
+    container_name: odoo16_ee_ztyres_db
     image: postgres:12.12
     ports:
       - 5432:5432
     volumes: 
-      - ../PostgresData:/var/lib/postgresql/data/pgdata
+      - /ZTYRES/DB:/var/lib/postgresql/data/pgdata
     environment:
       - POSTGRES_DB=postgres
       - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_PASSWORD=58877216/Abca1373
       - POSTGRES_USER=odoo
+    restart: always

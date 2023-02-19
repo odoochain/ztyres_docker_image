@@ -1,7 +1,7 @@
 version: '2'
 services:
   odoo16_ee_ztyres:
-    container_name: odoo16_ee_ztyres
+    container_name: odoo16_ee_ztyres_web
     image: jrmpacheco/odoo16_ee_ztyres
     user: odoo
     ports:
@@ -14,6 +14,5 @@ services:
     volumes:
       - ./etc:/etc/odoo
       - ./extra-addons:/mnt/extra-addons
-      - ./out_files:/mnt/out_files
-      - ../Filestore:/var/lib/odoo/.local/share/Odoo
+      - /ZTYRES/FILESTORE:/var/lib/odoo/.local/share/Odoo
     restart: always
