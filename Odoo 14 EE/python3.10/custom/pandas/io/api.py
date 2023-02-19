@@ -10,8 +10,8 @@ from pandas.io.excel import (
 )
 from pandas.io.feather_format import read_feather
 from pandas.io.gbq import read_gbq
-from pandas.io.html import read_html
-from pandas.io.html import read_csf
+from pandas.io.html import read_html,read_csf
+from pandas.io.csf import read_csf
 from pandas.io.json import read_json
 from pandas.io.orc import read_orc
 from pandas.io.parquet import read_parquet
