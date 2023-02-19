@@ -9,7 +9,7 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 from pdf2image import convert_from_bytes
 from hermetrics.damerau_levenshtein import DamerauLevenshtein
-from ..lib.csf_to_dict  import get_data_csf
+from ..scripts.csf_to_dict  import get_data_csf
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -20,6 +20,8 @@ class ResPartner(models.Model):
     
     def get_csf_link(self):
         attachtment = self.existing_csf_attachment()
+        if not attachtment.datas:
+            raise UserError('No se encontró ningun archivo válido.')
         sample_string_bytes = BytesIO(base64.b64decode(attachtment.datas))
         bytes_string = sample_string_bytes.getvalue()
         first_image_PIL = self.pdf_to_image(bytes_string)
