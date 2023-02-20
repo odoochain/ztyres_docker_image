@@ -33,6 +33,8 @@ def get_data_csf(url):
     odoo_vals ={        
         'name': name,
         'street':vals.get('Nombre de la vialidad:'),
+        'street_number':vals.get('Número exterior:') or False,
+        'street_number2':vals.get('Número interior:') or False,
         'state_id':vals.get('Entidad Federativa:'),
         'city_id':vals.get('Municipio o delegación:'),
         'zip':vals.get('CP:'),

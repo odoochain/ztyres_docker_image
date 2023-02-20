@@ -48,6 +48,8 @@ class ResPartner(models.Model):
             partner.city_id = self.get_city_id_id(data.get('city_id'))        
             partner.country_id = self.get_country_id('México')            
             partner.street = data.get('street')
+            partner.street_number = data.get('street_number')
+            partner.street_number2 = data.get('street_number2')
             partner.vat = data.get('vat')
             partner.zip = data.get('zip')
             partner.name = data.get('name')
