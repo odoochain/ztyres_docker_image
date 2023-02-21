@@ -7,13 +7,6 @@
                 <field name="model">sale.order</field>
                 <field name="inherit_id" ref="sale.view_order_form" />
                 <field name="arch" type="xml">
-                    <!-- <xpath expr="/form/*" position="after">
-                        <header attrs="{'invisible': [('state', 'in',['cancel'])]}">
-                            <button name="sale_approve_state_draft" type="object" string="Validación Gte. Vtas" attrs="{'invisible': ['|',('payment_term_days', 'not in', [0,False]),('approve_state', 'in',['draft','confirm'])]}" groups="ztyres.management_approve,ztyres.manager_access"/>
-                            <button name="sale_approve_state_confirm" type="object" string="Pago Anticipado" attrs="{'invisible': ['|',('payment_term_days', 'not in', [0,False]),('approve_state', 'in',['confirm',False])]}" groups="ztyres.advance_payments_approved,ztyres.manager_access"/>
-                            <field name="approve_state" widget="statusbar" statusbar_visible="draft,confirm" attrs="{'invisible': [('payment_term_days', 'not in',[0,False])]}"/>
-                          </header>
-                      </xpath> -->
                       <field name='payment_term_id' position='before'>
                         <field name='payment_term_days' invisible='1' /> 
                         
@@ -22,17 +15,9 @@
                         <attribute name="readonly">True</attribute>     
                         
                       </field>
-                    <!-- <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='price_subtotal']" position="before">
-                        <field name="promotion_applied" widget="many2many_tags" readonly="1" />
-                        <field name="amount_discount" />
-                        <field name="price_with_discount" />
-                    </xpath> -->
                     <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_id']" position="after">
                         <field name="dot_range" />
                     </xpath>
-                    <!-- <field name='payment_term_id' position='after'>
-                        <field name='month_promotion' />
-                    </field> -->
                     <field name='partner_id' position='before'>
                         <field name='sale_reason_cancel_id' readonly="1" widget="many2many_tags" attrs="{'invisible':[('state','not in', ['cancel'])]}"/>
                     </field>                  
@@ -48,7 +33,6 @@
             <field name="arch" type="xml">
               <xpath expr="//tree/field[@name='partner_id']" position="after">
                 <field name="payment_term_days" />
-                <!-- <field name="approve_state" /> -->
               </xpath>
             </field>
           </record>

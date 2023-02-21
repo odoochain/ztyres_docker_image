@@ -42,7 +42,7 @@ class SaleOrderLine(models.Model):
                 line.price_unit = pricelist_items.fixed_price
         return low_price  
     
-    @api.onchange('product_uom', 'product_uom_qty')
+    @api.onchange('product_id','product_uom', 'product_uom_qty')
     def product_uom_change(self):
         if not self.product_uom or not self.product_id:
             self.price_unit = 0.0

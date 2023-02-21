@@ -45,11 +45,9 @@ class ResPartner(models.Model):
             data = get_data_csf(rec.csf)
             partner = self.get_id_by_vat(data.get('vat'))
             partner.state_id = self.get_state_id(data.get('state_id'))
-            partner.city_id = self.get_city_id_id(data.get('city_id'))        
+            partner.city_id = self.get_city_id_id(data.get('city_id'),partner.state_id.id)        
             partner.country_id = self.get_country_id('México')            
             partner.street = data.get('street')
-            partner.street_number = data.get('street_number')
-            partner.street_number2 = data.get('street_number2')
             partner.vat = data.get('vat')
             partner.zip = data.get('zip')
             partner.name = data.get('name')
@@ -96,9 +94,9 @@ class ResPartner(models.Model):
         self.check_record(res)
         return res.id
     
-    def get_city_id_id(self,city_name):
+    def get_city_id_id(self,city_name,state_id_id):
         #Municipio
-        res = self.city_id.search([('name','=ilike',city_name)])
+        res = self.city_id.search([('name','=ilike',city_name),('state_id','in',[state_id_id])])
         self.check_record(res)
         return res.id
     

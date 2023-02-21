@@ -7,7 +7,7 @@ services:
     ports:
       - "8069:8069" # Normal Port
       - "8090:8090" # Testing Port
-      - "8071:8071" # Longpolling Port
+      - "8072:8072" # Longpolling Port
       - "8001:8001" # Debug Port
     tty: true
     # command: --

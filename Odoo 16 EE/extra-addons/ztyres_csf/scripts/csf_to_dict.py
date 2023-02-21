@@ -29,12 +29,10 @@ def get_data_csf(url):
             if len(st_1) == 2:
                 if st_1[0] and st_1[1]:
                     vals.update({st_1[0]:st_1[1]})
-    name = vals.get('Denominación o Razón Social:') or '%s %s %s'%(vals.get('Nombre:') or "",vals.get('Apellido Materno:') or "",vals.get('Apellido Paterno:') or "")
+    name = vals.get('Denominación o Razón Social:') or '%s %s %s'%(vals.get('Nombre:') or "",vals.get('Apellido Paterno:') or "",vals.get('Apellido Materno:') or "")
     odoo_vals ={        
         'name': name,
         'street':vals.get('Nombre de la vialidad:'),
-        'street_number':vals.get('Número exterior:') or False,
-        'street_number2':vals.get('Número interior:') or False,
         'state_id':vals.get('Entidad Federativa:'),
         'city_id':vals.get('Municipio o delegación:'),
         'zip':vals.get('CP:'),
