@@ -43,7 +43,7 @@ RUN pip3 install --upgrade pip
 # install custom libraries version from requeriments.txt
 COPY ./requeriments.txt requeriments.txt
 RUN pip3 install -r requeriments.txt
-RUN rm -R /usr/local/lib/python3.10/dist-packages/pandas
+##RUN rm -R /usr/local/lib/python3.10/dist-packages/pandas
 COPY ./python3.10/custom/pandas /usr/local/lib/python3.10/dist-packages/pandas
 
 RUN npm install -g rtlcss
@@ -89,3 +89,6 @@ USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["odoo"]
+
+
+##After do changes of custom pandas because disapears 
