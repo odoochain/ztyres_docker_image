@@ -1,6 +1,6 @@
 ptvsd
 openpyxl==3.0.10
-#pandas==1.5.2
+pandas==1.5.2
 pyOpenSSL==19.0.0
 python-decouple
 html5lib

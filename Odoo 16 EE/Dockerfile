@@ -40,11 +40,10 @@ RUN  curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/packaging/release
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ./wkhtmltox.deb \
 && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
 RUN pip3 install --upgrade pip
+
 # install custom libraries version from requeriments.txt
 COPY ./requeriments.txt requeriments.txt
 RUN pip3 install -r requeriments.txt
-##RUN rm -R /usr/local/lib/python3.10/dist-packages/pandas
-COPY ./python3.10/custom/pandas /usr/local/lib/python3.10/dist-packages/pandas
 
 RUN npm install -g rtlcss
 
@@ -68,12 +67,15 @@ RUN chown odoo:odoo /etc/odoo/odoo.conf \
     && mkdir -p /mnt/out_files \
     && chmod 777 -R /mnt/out_files \
     && chown -R odoo:odoo /mnt/out_files \
-    && chown -R odoo:odoo /var/lib/odoo \
-    && chown -R root:root /usr/local/lib/python3.10/dist-packages/pandas \
-    && chmod 755 -R /usr/local/lib/python3.10/dist-packages/pandas 
+    && chown -R odoo:odoo /var/lib/odoo
+    # && chown -R root:root /usr/local/lib/python3.10/dist-packages/pandas \
+    # && chmod 755 -R /usr/local/lib/python3.10/dist-packages/pandas 
     
 VOLUME ["/etc/odoo","/var/lib/odoo","/mnt/extra-addons","/mnt/out_files"]
 RUN chmod 777 -R /var/lib/odoo
+COPY ./custom_pandas/__init__.py /usr/local/lib/python3.10/dist-packages/pandas
+COPY ./custom_pandas/api.py /usr/local/lib/python3.10/dist-packages/pandas/io/api.py
+COPY ./custom_pandas/html.py /usr/local/lib/python3.10/dist-packages/pandas/io/html.py
 RUN pip3 install -U  pandas==1.5.2
 
 # Expose Odoo services
