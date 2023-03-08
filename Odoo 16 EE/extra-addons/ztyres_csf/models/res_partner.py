@@ -19,18 +19,21 @@ class ResPartner(models.Model):
     file_one = fields.Binary(string='Archivo')
     
     def get_csf_link(self):
-        attachtment = self.existing_csf_attachment()
-        if not attachtment.datas:
-            raise UserError('No se encontró ningun archivo válido.')
-        sample_string_bytes = BytesIO(base64.b64decode(attachtment.datas))
-        bytes_string = sample_string_bytes.getvalue()
-        first_image_PIL = self.pdf_to_image(bytes_string)
-        
-        ##Data retrieves all qr finded
-        data = decode(Image.open(first_image_PIL.fp))[0][0]
-        url_csf = data.decode("utf-8")
-        if url_csf:
-            self.csf = url_csf
+        try:            
+            attachtment = self.existing_csf_attachment()
+            if not attachtment.datas:
+                raise UserError('No se encontró ningun archivo válido.')
+            sample_string_bytes = BytesIO(base64.b64decode(attachtment.datas))
+            bytes_string = sample_string_bytes.getvalue()
+            first_image_PIL = self.pdf_to_image(bytes_string)
+
+            ##Data retrieves all qr finded
+            data = decode(Image.open(first_image_PIL.fp))[0][0]
+            url_csf = data.decode("utf-8")
+            if not self.csf:
+                self.csf = url_csf
+        except:
+            pass
     
     def pdf_to_image(self,bytes):
         #Takes the first image
@@ -121,12 +124,7 @@ class ResPartner(models.Model):
         if len(record)>1:
             raise UserError('Se han encontrado uno o más registros con el mismo nombre %s'%(record.mapped('name')))
 
-    @api.constrains('file_one_name')
-    def _check_name(self):
-        if not self.file_one:
-            raise UserError(('No hay Archivo'))
-        if not self.file_one_name.upper().endswith('.PDF'):
-            raise UserError(('El archivo debe ser .pdf o .Pdf o .PDF'))
+
             
         
     
