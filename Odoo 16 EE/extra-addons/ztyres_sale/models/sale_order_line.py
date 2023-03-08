@@ -22,13 +22,7 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'    
 
     dot_range = fields.Char(related='product_id.dot_range')
-    # amount_discount = fields.Float(compute='check_ztyres_sale_promotion',string='Ahorro',store=True)
-    # price_with_discount = fields.Float(compute='check_ztyres_sale_promotion',string='Precio con descuento',store=True)    
-    # promotion_applied = fields.Many2many('ztyres.sale_promotion_line', string='Promoción aplicada')
-    
-    
 
-    
     def get_low_price(self):
         pricelist_item = self.env['product.pricelist.item']
         low_price = 0
@@ -44,29 +38,32 @@ class SaleOrderLine(models.Model):
     
     @api.onchange('product_id','product_uom', 'product_uom_qty')
     def product_uom_change(self):
-        if not self.product_uom or not self.product_id:
-            self.price_unit = 0.0
-            return
-        if self.order_id.pricelist_id and self.order_id.partner_id:
-            product = self.product_id.with_context(
-                lang=self.order_id.partner_id.lang,
-                partner=self.order_id.partner_id,
-                quantity=self.product_uom_qty,
-                date=self.order_id.date_order,
-                pricelist=self.order_id.pricelist_id.id,
-                uom=self.product_uom.id,
-                fiscal_position=self.env.context.get('fiscal_position')
-            )
-            self.price_unit = product._get_tax_included_unit_price(
-                self.company_id,
-                self.order_id.currency_id,
-                self.order_id.date_order,
-                'sale',
-                fiscal_position=self.order_id.fiscal_position_id,
-                product_price_unit= self.get_low_price(),#self._get_display_price(product),
-                product_currency=self.order_id.currency_id
-            )     
-        print(product)
+        if self.order_id.not_change_price:
+            print('Cambiado')
+            if not self.product_uom or not self.product_id:
+                self.price_unit = 0.0
+                return
+            if self.order_id.pricelist_id and self.order_id.partner_id:
+                product = self.product_id.with_context(
+                    lang=self.order_id.partner_id.lang,
+                    partner=self.order_id.partner_id,
+                    quantity=self.product_uom_qty,
+                    date=self.order_id.date_order,
+                    pricelist=self.order_id.pricelist_id.id,
+                    uom=self.product_uom.id,
+                    fiscal_position=self.env.context.get('fiscal_position')
+                )
+                self.price_unit = product._get_tax_included_unit_price(
+                    self.company_id,
+                    self.order_id.currency_id,
+                    self.order_id.date_order,
+                    'sale',
+                    fiscal_position=self.order_id.fiscal_position_id,
+                    product_price_unit= self.get_low_price(),#self._get_display_price(product),
+                    product_currency=self.order_id.currency_id
+                )
+        else:
+            print('No Cambiado')             
 
 
 
@@ -76,36 +73,7 @@ class SaleOrderLine(models.Model):
             if record.price_unit == 0 or record.price_unit < 1:
                 raise UserError('No puede continuar con productos con precio $0   %s documento origen %s'%(record.name,record.order_id.name))
 
-    # @api.depends('product_id','product_uom_qty','order_id.month_promotion')
-    # def check_ztyres_sale_promotion(self):
-    #     promotion = self.env['ztyres.sale_promotion'].search([])
-    #     for record in self:
-    #         for promo in promotion:
-    #             for rec in  promo.sale_promotion_lines:
-    #                 discount_amount = (rec.discunt*record.price_unit) * record.product_uom_qty
-    #                 discounted_price = ((record.price_unit * record.product_uom_qty)-discount_amount) 
-    #                 if  record.product_id.manufacturer_id.id in rec.manufacturer_ids.ids and record.product_uom_qty >= rec.qty:
-    #                     record.amount_discount = discount_amount
-    #                     record.price_with_discount = discounted_price
-    #                     record.promotion_applied = [(4,rec.id)]
-    #                     break
-    #                 elif record.product_id.product_tier_id.id in rec.product_tier_ids.ids and record.product_uom_qty >= rec.qty:
-    #                     record.amount_discount = discount_amount
-    #                     record.price_with_discount = discounted_price
-    #                     record.promotion_applied = [(4,rec.id)]
-    #                     break
-    #                 elif record.product_id.product_usage_id.id in rec.product_usage_ids.ids and record.product_uom_qty >= rec.qty:
-    #                     record.amount_discount = discount_amount
-    #                     record.price_with_discount = discounted_price
-    #                     record.promotion_applied = [(4,rec.id)]
-    #                     break
-    #                 else:                        
-    #                     record.amount_discount = 0
-    #                     record.price_with_discount = 0                        
-    #                     record.promotion_applied = False
-
-
-
+   
 
 
     

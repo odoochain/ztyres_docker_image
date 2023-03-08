@@ -37,31 +37,10 @@
 
     # always loaded
     'data': [
-        # 'security/security.xml',
-        # 'security/ir.model.access.csv',
-        'views/account_move.xml',
-        'views/account_views.xml',
-        #'views/res_partner_views.xml',
-        'views/sale_order_report.xml',
-        'views/sale_views.xml',
-        # 'views/stock_production_lot_views.xml',
-        'wizard/denied_confirm_sale.xml',
-        # 'wizard/merge_quotations.xml',
-        #'views/stock_picking_views.xml',
-        # 'views/ztyres_sale_promotion_views.xml',
-        # 'views/product_template_form_view.xml',
-        # 'wizard/update_pricelist.xml',
-        # 'views/update_pricelist_button_template.xml',
-        'wizard/sale_order_cancel_reason.xml',
-        # 'wizard/update_pricelist_import.xml',
-        # 'wizard/update_pricelist_confirm_import.xml',
         'views/stock_valuation_layer_resume_history_views.xml',
         'views/stock_valuation_layer_resume_line_views.xml',
         'views/product_template_views.xml',
         'wizard/price_list_export_wizard.xml',
-        # 'wizard/pricelist_import_wizard.xml'
-        
-
     ],
         'qweb': [
         
