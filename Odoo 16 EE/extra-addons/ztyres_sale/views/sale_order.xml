@@ -16,6 +16,17 @@
                         </header>
                     </xpath>
 
+                    <xpath expr="//button[@name='action_preview_sale_order']" position="after">
+                            <button class="oe_stat_button" name="open_payment_receipts" type="object" icon="fa-signal">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="payment_receipts_count" widget="statinfo" nolabel="1" class="mr4" />
+                                    </span>
+                                    <span class="o_stat_text">Comprobantes de Pago</span>
+                                </div>
+                            </button>
+                    </xpath>
+
                     <field name='payment_term_id' position='before'>
                         <field name='payment_term_days' invisible='1' /> 
                         <field name='not_change_price'   />
@@ -51,9 +62,6 @@
                                 <field name="partner_id_unpaid_invoices_count" />
                             </b>
                             </div>
-                            <!-- TODO: Migrate to code -->
-                            
-
                     </xpath>
                 </field>
             </record>

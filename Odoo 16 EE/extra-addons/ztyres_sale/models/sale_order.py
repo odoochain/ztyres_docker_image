@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api,_
-from datetime import datetime
+from odoo import models, fields
 from odoo.exceptions import UserError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -14,6 +13,16 @@ class SaleOrder(models.Model):
     show_partner_credit_alert = fields.Boolean(compute='_compute_show_partner_credit_alert')
     grant_overdue_credit = fields.Selection(string='Sobre giro de cuenta', selection=[ ('unlocked', 'Venta con sobregiro consentido')],default=False)
     not_change_price = fields.Boolean('No cambiar precio',default=False)
+    payment_receipts_count = fields.Integer(compute='_compute_payment_receipts_count', string='Comprobantes de pago')
+   
+    
+    def _compute_payment_receipts_count(self):
+        self.payment_receipts_count = 3
+    
+    
+    def open_payment_receipts(self):
+        pass
+    
     def _compute_payment_term_days(self):
         for record in self:
             record.payment_term_days = record.payment_term_id.line_ids.days
@@ -31,14 +40,12 @@ class SaleOrder(models.Model):
               <b></b>
               <br/>
           """      
-        self.message_post(body=display_msg)        
-        
+        self.message_post(body=display_msg)                
     def set_lock_overdue_credit(self):
         self.grant_overdue_credit = False
 
+
 #TODO: Doesn't works.
-
-
     def get_account_report(self):
         return self.env.ref('studio_customization.studio_report_docume_a799a671-df55-4ef3-9f6e-1c6cd7e7cdbb').report_action(self.partner_id)
 
@@ -46,7 +53,7 @@ class SaleOrder(models.Model):
         for order in self:
             if order.grant_overdue_credit !='unlocked':
                 order.check_account_lock()      
-                order.check_credit_available()
+                order._check_credit_available()
         return super(SaleOrder, self).action_confirm()
     
     def check_account_lock(self):
@@ -66,7 +73,21 @@ class SaleOrder(models.Model):
             return available
         
         
-    def check_credit_available(self):
-        for order in self:                                           
+    def _check_credit_available(self):
+        for order in self:                                                 
             if not order.partner_id_credit_available >= order.amount_total:
-                raise UserError('Esta cotización excede el límite de crédito del cliente, por favor comuníquese con el área de Finanzas') 
+                raise UserError('Esta cotización excede el límite de crédito del cliente, por favor comuníquese con el área de Finanzas')
+            forecast_used = self.forecast_used_credit()
+            if not order.partner_id_credit_available >= order.amount_total + forecast_used:
+                message = 'Esta cotización excede el límite de cŕedito previsto: Disponible %s Previsto %s'%(order.partner_id_credit_available,forecast_used)
+                raise UserError(message)            
+            
+    
+    def forecast_used_credit(self):
+        domain = []
+        states = ['cancel','draft']
+        domain.append(('partner_id','in',self.partner_id.ids))
+        domain.append(('state','not in',states))
+        invpoice_states = ['invoiced']
+        domain.append(('invoice_status','not in',invpoice_states))
+        return sum(self.search(domain).mapped('amount_total'))
