@@ -17,7 +17,7 @@ except ImportError:
         "Try `pip3 install openpyxl` to install it."
     )
 class ImportCustomerWizard(models.TransientModel):
-    _name = "ztyres.pricelist_import_wizard"
+    _name = "ztyres_price_list.pricelist_import_wizard"
     file = fields.Binary(string="File", required=True)
     pricelist_ids = fields.Many2many('product.pricelist', string='Lista de Precios destino',required=True)    
     options = fields.Selection(
