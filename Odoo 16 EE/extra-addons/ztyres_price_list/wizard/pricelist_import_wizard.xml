@@ -7,11 +7,14 @@
             <field name="arch" type="xml">
                 <form string="Importar Lista de Precios">
                     <group>
+                        <field name="pricelist_ids" widget="many2many_tags" />
+                    </group>
+                    <group>
                         <group>
-                            <field name="pricelist_ids" widget="many2many_tags" />                            
+                            <field name="options" />
+                            <field name="upload_options" />
+                            <field name="file" />
                         </group>
-                        <field name="options" />
-                        <field name="file" />
                     </group>
                     <footer>
                         <button

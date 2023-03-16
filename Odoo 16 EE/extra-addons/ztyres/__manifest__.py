@@ -40,7 +40,6 @@
         'views/stock_valuation_layer_resume_history_views.xml',
         'views/stock_valuation_layer_resume_line_views.xml',
         'views/product_template_views.xml',
-        'wizard/price_list_export_wizard.xml',
     ],
         'qweb': [
         

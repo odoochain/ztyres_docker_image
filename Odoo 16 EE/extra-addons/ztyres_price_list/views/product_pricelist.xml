@@ -1,6 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-        
+        <record id="product_pricelist_form" model="ir.ui.view">
+            <field name="name">product_pricelist.form</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view" />
+            <field name="arch" type="xml">
+                <field name='currency_id' position='after'>
+                    <field name='exclude_from_sale' />
+                    <field name='exclude_from_export_lists' />
+                </field>
+            </field>
+        </record>
     </data>
 </odoo>

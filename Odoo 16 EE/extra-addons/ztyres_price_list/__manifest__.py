@@ -20,13 +20,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['product'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'views/product_pricelist.xml',
+        'wizard/price_list_export_wizard.xml',
+        'wizard/pricelist_import_wizard.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

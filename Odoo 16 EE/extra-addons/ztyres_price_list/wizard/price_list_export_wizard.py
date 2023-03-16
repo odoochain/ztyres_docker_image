@@ -10,8 +10,8 @@ class PriceListExportWizard(models.TransientModel):
     def _default_tax(self):
         return self.env['account.tax'].search([('id', 'in', [2])]).ids
     def _default_pricelist(self):
-        return self.env['product.pricelist'].search([]).ids        
-    pricelist_ids = fields.Many2many('product.pricelist', string='Lista de Precios',default=_default_pricelist,required=True)
+        return self.env['product.pricelist'].search([('exclude_from_export_lists', '=', False)]).ids      
+    pricelist_ids = fields.Many2many('product.pricelist', string='Lista de Precios',default=_default_pricelist,domain=[('exclude_from_export_lists', '=', False)],required=True)
     file_data = fields.Binary('File')
     only_on_hand = fields.Boolean(string='Solo productos en existencia',default=True)    
     tax_ids = fields.Many2many('account.tax', string='Impuestos',default=_default_tax)
@@ -22,8 +22,6 @@ class PriceListExportWizard(models.TransientModel):
             limit =1            
         pricelist_item = self.env['product.pricelist.item']
         pricelist_items = pricelist_item.search([('product_tmpl_id','in',product_tmpl_ids),('pricelist_id.active','in',[True]),('pricelist_id','in',pricelist_ids)],order=order,limit=limit)
-        if len(pricelist_items)>1:
-            print("Err")
         return pricelist_items
 
     def download_report(self):
