@@ -9,12 +9,8 @@ class SaleOrder(models.Model):
     show_partner_credit_alert = fields.Boolean(compute='_compute_show_partner_credit_alert')
     partner_credit_limit = fields.Float(related='partner_id.credit_limit', readonly=True)
     partner_credit_amount_overdue = fields.Monetary(related='partner_id.credit_amount_overdue', readonly=True)
-    #month_promotion = fields.Selection([('01','Enero'),('02','Febrero'),('03','Marzo'),('04','Abril'),('05','Mayo'),('06','Junio'),('07','Julio'),('08','Agosto'),('09','Septiembre'),('10','Octubre'),('11', 'Noviembre'),('12','Diciembre')], string='Mes para promoción')
     sale_reason_cancel_id = fields.Many2many(comodel_name='ztyres.sale_reason_cancel', string='Motivo de Cancelación')
     payment_term_days = fields.Integer(compute='_compute_payment_term_days',string='Días de Crédito')
-    #APPROVE_STATES = [('draft', 'Gerente de Ventas'),('confirm', 'Pago Anticipado')]
-    #approve_state = fields.Selection(string='Estado de Aprobación', selection=APPROVE_STATES,track_visibility='onchange')    
-
     
     def sale_approve_state_draft(self):
         for record in self:
