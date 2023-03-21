@@ -52,24 +52,29 @@ class SaleOrderLine(models.Model):
                 fiscal_position=self.env.context.get('fiscal_position')
             )
 
+            price = 0
+            if not self._origin.price_unit > 0:
+                price = self.get_low_price()
+            else:
+                price = self._origin.price_unit
             self.price_unit = product._get_tax_included_unit_price(
                 self.company_id,
                 self.order_id.currency_id,
                 self.order_id.date_order,
                 'sale',
-                fiscal_position=self.order_id.fiscal_position_id,
-                product_price_unit= self.get_low_price(),#self._get_display_price(product),
-                product_currency=self.order_id.currency_id
+                fiscal_position = self.order_id.fiscal_position_id,
+                product_price_unit = price,#self._get_display_price(product),
+                product_currency = self.order_id.currency_id
             )     
         print(product)
 
 
 
     
-    def check_price_not_in_zero(self):
-        for record in self:
-            if record.price_unit == 0 or record.price_unit < 1:
-                raise UserError('No puede continuar con productos con precio $0   %s documento origen %s'%(record.name,record.order_id.name))
+    # def check_price_not_in_zero(self):
+    #     for record in self:
+    #         if record.price_unit == 0 or record.price_unit < 1:
+    #             raise UserError('No puede continuar con productos con precio $0   %s documento origen %s'%(record.name,record.order_id.name))
 
 
 

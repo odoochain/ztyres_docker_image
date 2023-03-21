@@ -47,23 +47,18 @@ class SaleOrder(models.Model):
         print(values)
         result = super().create(values)
         result.quotation_action_confirm()
-        result.order_line.check_price_not_in_zero()
+        # result.order_line.check_price_not_in_zero()
         return result
     
     
     def write(self, values):
         res = super().write(values)        
         if values.get("order_line") is not None:
-            self.order_line.check_price_not_in_zero()
+            # self.order_line.check_price_not_in_zero()
             if self.state == 'done':
                 self.action_unlock()
             if self.state == 'draft':
-                self.quotation_action_confirm()
-                res = self._ztyres_check_account_status()
-                if res:                
-                   return res                          
-            if self.state == 'sale':
-                self.action_done()                  
+                self.quotation_action_confirm()                                        
         return res
     
     def action_confirm(self):
