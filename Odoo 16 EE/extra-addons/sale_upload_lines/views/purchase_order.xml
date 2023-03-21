@@ -5,9 +5,11 @@
       <field name="model">purchase.order</field>
       <field name="inherit_id" ref="purchase.purchase_order_form" />
       <field name="arch" type="xml">
-        <field name='partner_id' position='after'>
-          <button name="import_purchase_lines" type="object" string="Importar lineas de pedido" />
-        </field>
+        <xpath expr="/form/header[last()]" position="inside">
+          <button name="import_purchase_lines" type="object" string="Importar lineas de pedido" 
+          groups="sale_upload_lines.import_lines"
+          />
+      </xpath>
       </field>
     </record>
   </data>
