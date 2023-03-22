@@ -32,7 +32,7 @@ class PurchaseOrderImport(models.TransientModel):
         product = self.env['product.product']
         res = product.search([(field,'in',[value])])
         if not len(res)==1:
-            raise UserError(_('Por favor asegurese de que el producto exista y no esté duplicado %s'%(res.mapped('id'))))
+            raise UserError(_('Por favor asegurese de que el producto exista y no esté duplicado %s %s'%(res.mapped('id'),value)))
         else:
             return res.id
                     
