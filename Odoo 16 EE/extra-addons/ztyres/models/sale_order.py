@@ -9,12 +9,8 @@ class SaleOrder(models.Model):
     show_partner_credit_alert = fields.Boolean(compute='_compute_show_partner_credit_alert')
     partner_credit_limit = fields.Float(related='partner_id.credit_limit', readonly=True)
     partner_credit_amount_overdue = fields.Monetary(related='partner_id.credit_amount_overdue', readonly=True)
-    #month_promotion = fields.Selection([('01','Enero'),('02','Febrero'),('03','Marzo'),('04','Abril'),('05','Mayo'),('06','Junio'),('07','Julio'),('08','Agosto'),('09','Septiembre'),('10','Octubre'),('11', 'Noviembre'),('12','Diciembre')], string='Mes para promoción')
     sale_reason_cancel_id = fields.Many2many(comodel_name='ztyres.sale_reason_cancel', string='Motivo de Cancelación')
     payment_term_days = fields.Integer(compute='_compute_payment_term_days',string='Días de Crédito')
-    #APPROVE_STATES = [('draft', 'Gerente de Ventas'),('confirm', 'Pago Anticipado')]
-    #approve_state = fields.Selection(string='Estado de Aprobación', selection=APPROVE_STATES,track_visibility='onchange')    
-
     
     def sale_approve_state_draft(self):
         for record in self:
@@ -51,23 +47,18 @@ class SaleOrder(models.Model):
         print(values)
         result = super().create(values)
         result.quotation_action_confirm()
-        result.order_line.check_price_not_in_zero()
+        # result.order_line.check_price_not_in_zero()
         return result
     
     
     def write(self, values):
         res = super().write(values)        
         if values.get("order_line") is not None:
-            self.order_line.check_price_not_in_zero()
+            # self.order_line.check_price_not_in_zero()
             if self.state == 'done':
                 self.action_unlock()
             if self.state == 'draft':
-                self.quotation_action_confirm()
-                res = self._ztyres_check_account_status()
-                if res:                
-                   return res                          
-            if self.state == 'sale':
-                self.action_done()                  
+                self.quotation_action_confirm()                                        
         return res
     
     def action_confirm(self):
@@ -102,74 +93,7 @@ class SaleOrder(models.Model):
     
     def _ztyres_check_account_status(self):
         return False
-        for order in self:
-            if order.partner_credit_amount_overdue <=0.0:
-                print('pasa')         
-              
 
-            # if order.partner_credit_amount_overdue <= 0.0 and self.approve_state not in ['confirm'] and self.payment_term_days == 0.0:
-            #     if self.approve_state in [False]:
-            #         raise UserError('Nececita la aprobación del Gerente de Ventas.')  
-            #     else:    
-            #         raise UserError('Nececita indicar que el pago anticipado fue realizado para compras de contado.')  
-            # if self.approve_state in ['confirm'] and self.payment_term_days == 0.0:
-            #     return False
-            
-            #####Logica con odoo studio
-            if order.partner_credit_amount_overdue <= 0.0 and (not self.x_studio_val_pago) and self.payment_term_days == 0.0:
-                if self.x_studio_val_ventas in [False]:
-                    raise UserError('Nececita la aprobación del Gerente de Ventas.')  
-                else:    
-                    raise UserError('Nececita indicar que el pago anticipado fue realizado para compras de contado.')  
-            if self.x_studio_val_pago and self.payment_term_days == 0.0:
-                return False    
-            #####            
-            if not (order.partner_credit_amount_overdue  <= 0.0 ):
-                return {
-                    'type': 'ir.actions.act_window',
-                    'name': 'Presenta saldo vencido.',
-                    'res_model': 'ztyres.wizard_denied_confirm_sale',
-                    'view_mode': 'form',                    
-                    'target': 'new'
-                }                                           
-            else:
-                if order.partner_credit_limit_used > order.partner_credit_limit:
-                    return {
-                    'type': 'ir.actions.act_window',
-                    'name': 'La cantidad de crédito usado es mayor a la cantidad de límite de crédito',
-                    'res_model': 'ztyres.wizard_denied_confirm_sale',
-                    'view_mode': 'form',                    
-                    'target': 'new'
-                }  
-                if order.partner_credit_limit_used == 0 and  order.partner_credit_limit == 0 and self.payment_term_days >0:
-                    return {
-                    'type': 'ir.actions.act_window',
-                    'name': 'El Cliente Necesita tener crédito para compras que no son de pago inmediato.',
-                    'res_model': 'ztyres.wizard_denied_confirm_sale',
-                    'view_mode': 'form',                    
-                    'target': 'new'
-                }
-                if order.amount_total >= order.partner_credit_limit_available:
-                    return {
-                        'type': 'ir.actions.act_window',
-                        'name': 'La el total de la factura supera el límite de crédito disponible.',
-                        'res_model': 'ztyres.wizard_denied_confirm_sale',
-                        'view_mode': 'form',                    
-                        'target': 'new'
-                    }                                                      
-                return False 
-
-    # def update_prices(self):
-    #     self.ensure_one()
-    #     for line in self._get_update_prices_lines():
-    #         line.product_uom_change()
-    #         line.discount = 0  # Force 0 as discount for the cases when _onchange_discount directly returns
-    #         line._onchange_discount()
-    #     self.show_update_pricelist = False
-    #     self.message_post(body=_("Product prices have been recomputed according to pricelist <b>%s<b> ", self.pricelist_id.display_name))            
-    #     self.order_line.check_ztyres_sale_promotion()
-    
-    
     def action_cancel(self):
         
         # Add code here
