@@ -26,7 +26,7 @@
     
     # any module necessary for this one to work correctly
     # 'l10n_mx_edi'
-    'depends': ['mail', 'stock', 'product', 'contacts', 'base', 'sale', 'sale_management', 'account','ztyres_price_list'],
+    'depends': ['mail', 'stock', 'product', 'contacts', 'base', 'sale', 'sale_management', 'account'],
     'application': False,
     'installable': True,
     'auto_install': False,
@@ -37,13 +37,6 @@
 
     # always loaded
     'data': [
-        # 'security/security.xml',
-        # 'security/ir.model.access.csv',
-        'views/account_move.xml',
-        'views/account_views.xml',
-        'views/sale_order_report.xml',
-        'views/sale_views.xml',
-        'wizard/sale_order_cancel_reason.xml',
         'views/stock_valuation_layer_resume_history_views.xml',
         'views/stock_valuation_layer_resume_line_views.xml',
         'views/product_template_views.xml'

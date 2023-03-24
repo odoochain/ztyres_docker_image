@@ -1,0 +1,19 @@
+x = self.env['res.partner'].browse(7166)
+
+adeudo total    total_due
+adeudo total vencido    total_overdue
+facturas no pagadas unpaid_invoice_ids unpaid_invoices_count
+facturas no conciliadas unreconciled_aml_ids
+constancia de situacion fiscal  csf
+total facturado 
+
+return account_followup.customer_statements_form_view as read only
+
+
+partner_id_total_due = fields.Monetary(related='partner_id.credt_limit_available', store=False)
+partner_id_total_overdue = fields.Monetary(related='partner_id.credt_limit_available', store=False)
+partner_id_unpaid_invoices_count = fields.Integer(related='partner_id.credt_limit_available', store=False)
+partner_id_unreconciled_aml_ids = fields.Many2many('account.move.line', string='Sin conciliar')
+partner_id_csf = fields.Monetary(related='partner_id.credt_limit_available', store=False)
+partner_id_total_invoiced = fields.Monetary(related='partner_id.credt_limit_available', store=False)
+

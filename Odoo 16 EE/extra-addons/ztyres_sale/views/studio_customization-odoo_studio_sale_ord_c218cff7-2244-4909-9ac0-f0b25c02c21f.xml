@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <record id="sale_order_form" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="studio_customization.odoo_studio_sale_ord_c218cff7-2244-4909-9ac0-f0b25c02c21f" />
+            <field name="arch" type="xml">
+                <field name='x_studio_val_ventas' position='replace'>
+                    <field name="x_studio_val_ventas" string="Gerente Ventas 12" attrs="{'readonly': [('state','not in', ['sale'])]}" />
+                </field>
+                <field name='x_studio_aprobacin_de_monto' position='replace'>
+                    <field name="x_studio_aprobacin_de_monto" string="Aprobación de monto 12" attrs="{'readonly': [('state','not in', ['sale'])]}"/>
+                </field>
+                <field name='x_studio_val_credito' position='replace'>
+                    <field name="x_studio_val_credito" string="Gerente Crédito 12" force_save="True" widget="boolean" attrs="{'readonly': [('state','not in', ['sale'])]}"/>
+                </field>
+                <field name='x_studio_val_pago' position='replace'>
+                    <field name="x_studio_val_pago" string="Pago Anticipado 12" attrs="{'readonly': [('state','not in', ['sale'])]}"/>
+                </field>
+                <field name='x_studio_solicitud_de_embarques' position='replace'>
+                    <field name="x_studio_solicitud_de_embarques" string="Solicitud de Embarques 12"  widget="selection" attrs="{'readonly': [('state','not in', ['sale'])]}"/>
+                </field>
+            </field>
+        </record>
+       
+
+    </data>
+</odoo>

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <data>
+            <record id="view_order_form_inherit_dot_range" model="ir.ui.view">
+                <field name="name">sale.order.form</field>
+                <field name="model">sale.order</field>
+                <field name="inherit_id" ref="sale.view_order_form" />
+                <field name="arch" type="xml">
+
+                    <xpath expr="/form/header[last()]" position="after">
+                        <header>
+                            <!-- <button name="get_account_report" type="object" string="Descargar estado de cuenta"/> -->
+                            <button name="set_unlock_overdue_credit" type="object" attrs="{'invisible':[('grant_overdue_credit', 'in', ['unlocked'])]}" string="Permitir sobregiro de cuenta" confirm="Advetencia: Esta operación no se puede deshacer. ¿Dese continuar?"/>                            
+                            <field name="grant_overdue_credit" widget="statusbar" attrs="{'invisible':[('grant_overdue_credit', 'not in', ['unlocked'])]}"/>                
+                        </header>
+                    </xpath>
+
+                    <!-- <xpath expr="//button[@name='action_preview_sale_order']" position="after">
+                            <button class="oe_stat_button" name="open_payment_receipts" type="object" icon="fa-signal">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="payment_receipts_count" widget="statinfo" nolabel="1" class="mr4" />
+                                    </span>
+                                    <span class="o_stat_text">Comprobantes de Pago</span>
+                                </div>
+                            </button>
+                    </xpath> -->
+
+                    <field name='payment_term_id' position='before'>
+                        <field name='payment_term_days' invisible='1' /> 
+                        <field name='not_change_price'   />
+                    </field>
+                    <field name='payment_term_id' position='attributes'>
+                        <attribute name="readonly">True</attribute>
+                    </field>
+
+                    <xpath
+                        expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_id']"
+                        position="after">
+                        <field name="dot_range" />
+                    </xpath>
+
+
+
+                    <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']"
+                        position="attributes">
+                        <attribute name="domain">[('qty_available', '>', 0)]</attribute>
+                    </xpath>
+
+                    <xpath expr="//sheet" position="before">
+                        <field name="show_partner_credit_alert" invisible="1" />
+                        <div class="alert alert-info mb-0" role="alert"
+                            attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent']), ('show_partner_credit_alert', '=', False),('partner_id_total_overdue','&lt;=',0)]}">
+                            <b>Información de crédito :</b> Adeudo total : <b>
+                                <field name="partner_id_total_due" />
+                            </b>.
+                            Adeudo Vencido : <b>
+                                <field name="partner_id_total_overdue" />
+                            </b>
+                            Fcaturas sin pagar : <b>
+                                <field name="partner_id_unpaid_invoices_count" />
+                            </b>
+                            </div>
+                    </xpath>
+                </field>
+            </record>
+        </data>
+
+
+        <record id="view_order_tree_inherit_sale_approve" model="ir.ui.view">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='partner_id']" position="after">
+                    <field name="payment_term_days" />
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

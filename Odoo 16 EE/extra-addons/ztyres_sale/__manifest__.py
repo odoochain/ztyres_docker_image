@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "ztyres_price_list",
+    'name': "ztyres_sale",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -20,15 +20,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['product'],
+    'depends': ['sale','product'],
 
     # always loaded
     'data': [
-        'security/security.xml',
-        'security/ir.model.access.csv',
-        'views/product_pricelist.xml',
-        'wizard/price_list_export_wizard.xml',
-        'wizard/pricelist_import_wizard.xml'
+        # 'security/ir.model.access.csv',
+        'views/sale_order.xml',
+        'views/studio_customization-odoo_studio_sale_ord_c218cff7-2244-4909-9ac0-f0b25c02c21f.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -28,7 +28,7 @@ class SaleOrderLine(models.Model):
         low_price = 0
         for line in self:
             print(line.product_id.product_tmpl_id.ids)
-            pricelist_items = pricelist_item.search([('product_tmpl_id','in',line.product_id.product_tmpl_id.ids),('pricelist_id.exclude_from_sale','in',[False]),('pricelist_id.active','in',[True])],order="fixed_price asc",limit=1)
+            pricelist_items = pricelist_item.search([('product_tmpl_id','in',line.product_id.product_tmpl_id.ids),('pricelist_id.active','in',[True])],order="fixed_price asc",limit=1)
             for product in pricelist_items:
                 print(product.fixed_price,product.pricelist_id.name)
             if pricelist_items:
@@ -67,16 +67,17 @@ class SaleOrderLine(models.Model):
                 product_currency = self.order_id.currency_id
             )     
         print(product)
+           
 
 
 
     
-    # def check_price_not_in_zero(self):
-    #     for record in self:
-    #         if record.price_unit == 0 or record.price_unit < 1:
-    #             raise UserError('No puede continuar con productos con precio $0   %s documento origen %s'%(record.name,record.order_id.name))
+    def check_price_not_in_zero(self):
+        for record in self:
+            if record.price_unit == 0 or record.price_unit < 1:
+                raise UserError('No puede continuar con productos con precio $0   %s documento origen %s'%(record.name,record.order_id.name))
 
-
+   
 
 
     
