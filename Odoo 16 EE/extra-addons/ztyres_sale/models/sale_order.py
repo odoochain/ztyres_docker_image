@@ -11,8 +11,7 @@ class SaleOrder(models.Model):
     partner_id_csf = fields.Char(related='partner_id.csf', store=False,string = 'Cosntancia de situacion fiscal')
     payment_term_days = fields.Integer(compute='_compute_payment_term_days',string='Días de Crédito')
     show_partner_credit_alert = fields.Boolean(compute='_compute_show_partner_credit_alert')
-    grant_overdue_credit = fields.Selection(string='Sobre giro de cuenta', selection=[ ('unlocked', 'Venta con sobregiro consentido')],default=False,copy=False)
-    not_change_price = fields.Boolean('No cambiar precio',default=False)
+    grant_overdue_credit = fields.Selection(string='Sobre giro de cuenta', selection=[ ('unlocked', 'Venta con sobregiro consentido')],default=False,copy=False)    
     payment_receipts_count = fields.Integer(compute='_compute_payment_receipts_count', string='Comprobantes de pago')
    
     
@@ -59,6 +58,7 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         for order in self:
             if order.grant_overdue_credit !='unlocked':
+                res = super(SaleOrder, self).action_confirm()
                 order.check_account_lock()      
                 order._check_credit_available()
                 order.x_studio_val_ventas = True                
@@ -69,12 +69,13 @@ class SaleOrder(models.Model):
             order.x_studio_val_credito = True
             order.x_studio_val_pago = True
             order.x_studio_solicitud_de_embarques = 'Si'                
-        return super(SaleOrder, self).action_confirm()
+        return res
     
     def check_account_lock(self):
         for order in self:            
             if order.partner_id.total_overdue>0:
-                raise UserError('Presenta saldo vencido, por favor comuníquese con el área de Finanzas') 
+                if  order.state in ['sale']:
+                    raise UserError('Presenta saldo vencido, por favor comuníquese con el área de Finanzas') 
     
     def _credit_available(self):
         for order in self:
@@ -89,9 +90,9 @@ class SaleOrder(models.Model):
         
         
     def _check_credit_available(self):
-        for order in self:                                                 
+        for order in self:                                                             
             if not order.partner_id_credit_available >= order.amount_total:
-                raise UserError('Esta cotización excede el límite de crédito del cliente, por favor comuníquese con el área de Finanzas')
+                raise UserError('Esta cotización excede el límite de crédito del cliente Monto disponible: %s Monto de la compra %s , por favor comuníquese con el área de Finanzas'%(order.partner_id_credit_available,order.amount_total))
             forecast_used = self.forecast_used_credit()
             if not order.partner_id_credit_available >= order.amount_total + forecast_used:
                 message = 'Esta cotización excede el límite de cŕedito previsto: Disponible %s Previsto %s'%(order.partner_id_credit_available,forecast_used)
@@ -103,6 +104,7 @@ class SaleOrder(models.Model):
         states = ['cancel','draft']
         domain.append(('partner_id','in',self.partner_id.ids))
         domain.append(('state','not in',states))
+        domain.append(('id','not in',self.ids))
         invpoice_states = ['invoiced']
         domain.append(('invoice_status','not in',invpoice_states))
         return sum(self.search(domain).mapped('amount_total'))
@@ -113,9 +115,13 @@ class SaleOrder(models.Model):
         return super(SaleOrder, self).action_draft()    
     
 
-    def quotation_action_confirm(self):     
-        # Validate sale policies again
-        for order in self:            
+    def quotation_action_confirm(self):              
+        # Validate sale policies again                
+        for order in self:
+            #FIXME
+            if order.state == 'sale':                
+                order.check_account_lock()
+                order._check_credit_available()                           
             for picking in order.picking_ids:
                 if picking.x_studio_embarque:
                     raise UserError('No se pueden modificar cantidades en un traslado %s embarcado %s'%(picking.name,picking.x_studio_embarque.x_name))                                
@@ -124,12 +130,15 @@ class SaleOrder(models.Model):
                     picking.action_cancel()
                     picking.sudo().unlink()
 
+
         self.order_line._ztyres_action_launch_stock_rule()
 
     def _action_cancel_delete_picking_ids(self):
         res = super(SaleOrder, self).action_cancel()
         for order in self:    
-            for picking in order.picking_ids:
+            for picking in order.picking_ids:                
+                if picking.x_studio_embarque:
+                    raise UserError('No se pueden modificar cantidades en un traslado %s embarcado %s'%(picking.name,picking.x_studio_embarque.x_name))                
                 if picking.state in ['cancel']:
                     picking.sudo().unlink()     
         return res
@@ -138,4 +147,8 @@ class SaleOrder(models.Model):
         self._action_cancel_delete_picking_ids()
         self.with_context(tracking_disable=True)._action_cancel()     
         self.message_post(body="Cancelado") 
-        self.grant_overdue_credit = False  
+        self.grant_overdue_credit = False 
+        self.x_studio_val_ventas = True                
+        self.x_studio_val_credito = True
+        self.x_studio_val_pago = True
+        self.x_studio_solicitud_de_embarques = False

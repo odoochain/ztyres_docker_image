@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="account_overdraft" model="res.groups">
+            <field name="name">Sobregiro de cuentas _</field>
+            <field name="category_id" ref="base.module_category_sales" />
+        </record>
+    </data>
+</odoo>

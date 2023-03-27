@@ -25,6 +25,7 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'security/security.xml',
         'views/sale_order.xml',
         'views/studio_customization-odoo_studio_sale_ord_c218cff7-2244-4909-9ac0-f0b25c02c21f.xml'
     ],
