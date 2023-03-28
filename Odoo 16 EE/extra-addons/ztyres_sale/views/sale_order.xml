@@ -66,7 +66,17 @@
             </record>
         </data>
 
-
+        <record id="product_tree" model="ir.ui.view">
+            <field name="name">product.product.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view" />
+            <field name="arch" type="xml">
+            <field name='standard_price' position='attributes'>
+                 <attribute name="invisible">True</attribute> 
+            </field>
+            </field>
+        </record> 
+        
         <record id="view_order_tree_inherit_sale_approve" model="ir.ui.view">
             <field name="name">sale.order.tree</field>
             <field name="model">sale.order</field>
