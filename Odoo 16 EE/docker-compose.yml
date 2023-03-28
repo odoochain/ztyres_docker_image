@@ -5,10 +5,10 @@ services:
     image: jrmpacheco/odoo16_ee_ztyres:1.0.2
     user: odoo
     ports:
-      - "8069:8069" # Normal Port
-      - "8090:8090" # Testing Port
-      - "8072:8072" # Longpolling Port
-      - "8001:8001" # Debug Port
+      - "9069:8069" # Normal Port
+      - "9090:8090" # Testing Port
+      - "9072:8072" # Longpolling Port
+      - "9001:8001" # Debug Port
     tty: true
     # command: --
     volumes:

@@ -73,7 +73,7 @@ class SaleOrder(models.Model):
     
     def check_account_lock(self):
         for order in self:            
-            if order.partner_id.total_overdue>0:
+            if order.partner_id.total_overdue > 0:
                 if  order.state in ['sale']:
                     raise UserError('Presenta saldo vencido, por favor comuníquese con el área de Finanzas') 
     

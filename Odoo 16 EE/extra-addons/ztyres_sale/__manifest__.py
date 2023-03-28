@@ -20,14 +20,16 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale','product'],
+    'depends': ['sale','product','account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'security/security.xml',
         'views/sale_order.xml',
-        'views/studio_customization-odoo_studio_sale_ord_c218cff7-2244-4909-9ac0-f0b25c02c21f.xml'
+        'views/studio_customization-odoo_studio_sale_ord_c218cff7-2244-4909-9ac0-f0b25c02c21f.xml',
+        'views/sale_order_report.xml',
+        'views/account_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
