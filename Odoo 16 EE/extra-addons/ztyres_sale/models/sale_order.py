@@ -152,3 +152,5 @@ class SaleOrder(models.Model):
         self.x_studio_val_credito = True
         self.x_studio_val_pago = True
         self.x_studio_solicitud_de_embarques = False
+        
+        
