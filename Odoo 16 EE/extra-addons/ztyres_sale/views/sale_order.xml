@@ -17,7 +17,7 @@
                     </xpath>
 
                     <!-- <xpath expr="//button[@name='action_preview_sale_order']" position="after">
-                            <button class="oe_stat_button" name="open_payment_receipts" type="object" icon="fa-signal">
+                            <button class="oe_stat_button" name="open_payment_receipts" type="object" icon="fa-refresh">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="payment_receipts_count" widget="statinfo" nolabel="1" class="mr4" />
@@ -42,7 +42,7 @@
 
 
                     <xpath expr="/form/header[last()]" position="inside">
-                        <button name="quotation_action_confirm" type="object" class="fa-refresh" string="Actualizar entrega"/>
+                        <button name="quotation_action_confirm" type="object" icon="fa-refresh" string="Actualizar entrega"/>
                     </xpath>
                     <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']"
                         position="attributes">
@@ -92,7 +92,7 @@
 
     <!-- Reemplazo de dominio de una accion sin reescribir la vista por completo -->
      <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
-        <field name="domain">[('state', 'not in', ('sale'))]</field>
+        <field name="domain">[('state', 'not in', ['sale'])]</field>
       </record>
 
     </data>
