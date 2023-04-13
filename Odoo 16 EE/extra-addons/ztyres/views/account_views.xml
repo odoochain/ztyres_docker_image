@@ -11,5 +11,58 @@
                 </xpath>
             </field>
         </record>
+
+         <template id="report_invoice_document_inherit_dot_range" inherit_id="account.report_invoice_document">
+            <xpath expr="//span[@t-field='line.name']" position="after">
+                <br />
+                <t t-if="line.product_id.dot_range">
+                    DOT:
+                    <span t-field="line.product_id.dot_range" />
+                    <!-- <span t-field="o.partner_id.phone"/> -->
+                </t>
+            </xpath>
+    
+    
+            <xpath expr="//div[@id='total']" position="before">
+                <tr class="border-black o_total">
+                    <td name="td_amount_total_piezas">
+                        <strong>Total de Piezas: </strong>
+                    </td>
+                    <td name="td_amount_sum_total_piezas" class="text-right">
+                        <th>
+                            <t t-esc="sum(m.quantity for m in lines)" />
+                        </th>
+                    </td>
+                </tr>
+            </xpath>
+
+            <xpath expr="//div[@name='shipping_address_block']" position="inside">
+                <div t-if="o.partner_id.phone">
+                    <span class="label">Teléfono de contacto:</span>
+                    <span class="value" t-field="o.partner_id.phone"/>
+                  </div>
+            </xpath>
+            <xpath expr="//div[@name='address_same_as_shipping']" position="inside">
+                <div t-if="o.partner_id.phone">
+                    <span class="label">Teléfono de contacto:</span>
+                    <span class="value" t-field="o.partner_id.phone"/>
+                  </div>
+            </xpath>    
+            <xpath expr="//div[@name='address_not_same_as_shipping']" position="inside">
+                <div t-if="o.partner_id.phone">
+                    <span class="label">Teléfono de contacto:</span>
+                    <span class="value" t-field="o.partner_id.phone"/>
+                  </div>
+            </xpath>  
+
+        <xpath expr="//div[@name='no_shipping']" position="inside">
+            <div t-if="o.partner_id.phone">
+                <span class="label">Teléfono de contacto:</span>
+                <span class="value" t-field="o.partner_id.phone"/>
+              </div>
+            </xpath>
+
+        </template>
+    
     </data>
 </odoo>
