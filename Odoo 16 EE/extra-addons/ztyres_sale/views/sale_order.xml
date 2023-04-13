@@ -11,7 +11,7 @@
                     <xpath expr="/form/header[last()]" position="after">
                         <header>
                             <!-- <button name="get_account_report" type="object" string="Descargar estado de cuenta"/> -->
-                            <button name="set_unlock_overdue_credit" type="object" attrs="{'invisible':['|',('grant_overdue_credit', 'in', ['unlocked']),('state','not in','sale')]}" string="Permitir sobregiro de cuenta" confirm="Advetencia: Esta operación no se puede deshacer. ¿Dese continuar?" groups="ztyres_sale.account_overdraft"/>                            
+                            <button name="set_unlock_overdue_credit" type="object" attrs="{'invisible':['|',('grant_overdue_credit', 'in', ['unlocked']),('state','not in',['sale'])]}" string="Permitir sobregiro de cuenta" confirm="Advetencia: Esta operación no se puede deshacer. ¿Dese continuar?" groups="ztyres_sale.account_overdraft"/>                            
                             <field name="grant_overdue_credit" widget="statusbar" attrs="{'invisible':[('grant_overdue_credit', 'not in', ['unlocked'])]}" groups="ztyres_sale.account_overdraft" />                
                         </header>
                     </xpath>

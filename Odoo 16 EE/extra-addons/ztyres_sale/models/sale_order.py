@@ -65,6 +65,8 @@ class SaleOrder(models.Model):
                 order.x_studio_val_credito = True
                 order.x_studio_val_pago = True
                 order.x_studio_solicitud_de_embarques = 'Si'
+            x = order
+            print(x)
             order.x_studio_val_ventas = True                
             order.x_studio_val_credito = True
             order.x_studio_val_pago = True
