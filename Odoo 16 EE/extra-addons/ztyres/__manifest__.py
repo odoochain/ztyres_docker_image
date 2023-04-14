@@ -46,7 +46,8 @@
         'wizard/sale_order_cancel_reason.xml',
         'views/stock_valuation_layer_resume_history_views.xml',
         'views/stock_valuation_layer_resume_line_views.xml',
-        'views/product_template_views.xml'
+        'views/product_template_views.xml',
+        'views/ir_actions_report_templates.xml'
     ],
         'qweb': [
         

@@ -66,7 +66,7 @@ class SaleOrderLine(models.Model):
                 product_price_unit = price,#self._get_display_price(product),
                 product_currency = self.order_id.currency_id
             )     
-        print(product)
+
 
 
 
