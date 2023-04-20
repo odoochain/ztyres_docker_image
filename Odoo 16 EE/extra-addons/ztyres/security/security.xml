@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record model="ir.module.category" id="aprobaciones_ztyres">
+            <field name="name">Permisos V NC F</field>
+            <field name="description">Permisos V NC F</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="cf" model="res.groups">
+            <field name="name">Cancelar Facturas</field>
+            <field name="category_id" ref="aprobaciones_ztyres" />
+        </record>
+        <record id="nc" model="res.groups">
+            <field name="name">Generar Notas de Crédito</field>
+            <field name="category_id" ref="aprobaciones_ztyres" />
+        </record>
+        <record id="lp" model="res.groups">
+            <field name="name">Liberacion de Pedidos</field>
+            <field name="category_id" ref="aprobaciones_ztyres" />
+        </record>
+    </data>
+</odoo>

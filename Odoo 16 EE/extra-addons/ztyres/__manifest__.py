@@ -37,7 +37,7 @@
 
     # always loaded
     'data': [
-        # 'security/security.xml',
+        'security/security.xml',
         # 'security/ir.model.access.csv',
         'views/account_move.xml',
         'views/account_views.xml',
@@ -47,7 +47,7 @@
         'views/stock_valuation_layer_resume_history_views.xml',
         'views/stock_valuation_layer_resume_line_views.xml',
         'views/product_template_views.xml',
-        'views/ir_actions_report_templates.xml'
+        'views/ir_actions_report_templates.xml',    
     ],
         'qweb': [
         

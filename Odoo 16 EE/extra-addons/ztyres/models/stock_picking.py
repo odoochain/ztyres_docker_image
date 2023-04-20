@@ -22,6 +22,5 @@ class StockPicking(models.Model):
             rec.separation_status='draft'
     
     def button_validate(self):
-        if self.location_dest_id.id in self.env['stock.location'].search([('complete_name','ilike','WH')]).ids:
-            self.scheduled_date = fields.Datetime.now()            
+        self.scheduled_date = fields.Datetime.now()            
         return super(StockPicking, self).button_validate()
