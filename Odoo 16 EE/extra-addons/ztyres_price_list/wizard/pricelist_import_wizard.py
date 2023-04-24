@@ -54,9 +54,9 @@ class ImportCustomerWizard(models.TransientModel):
                             product_tmpl_id = self.pricelist_ids.item_ids.product_tmpl_id.search([add_domain])
                             
                     if not product_tmpl_id:
-                        raise UserError(_('El producto que desea subir no existe'))
+                        raise UserError(_('El producto que desea subir no existe %s'%(record[0])))
                     if len(product_tmpl_id)>1:
-                        raise UserError(_('El producto se encuentra duplicado'))
+                        raise UserError(_('El producto se encuentra duplicado %s'%(record[0])))
                     domain.append(('product_tmpl_id','in',product_tmpl_id.ids))               
                     product = self.pricelist_ids.item_ids.search(domain)
                     if product and self.options == 'delete':
