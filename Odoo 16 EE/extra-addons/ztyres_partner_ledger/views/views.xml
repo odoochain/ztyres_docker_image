@@ -19,6 +19,7 @@
           <t t-call="web.external_layout">
             <!-- Cuerpo del reporte -->
             <div class="body">
+
               <div>
                 <h4>Estado de cuenta</h4>
               </div>
@@ -28,6 +29,7 @@
                   <span t-field="doc.name" />
                 </div>
               </div>
+
               <div class="row">
                 <div class="col">
                   <strong>Asesor:</strong>
@@ -48,6 +50,13 @@
                     <br />
                   </span>
                   <span t-field="doc.total_overdue" />
+                </div>
+                <div class="col-3">
+                  <span>
+                    <strong>Número de convenio exclusivo(CIE):</strong>
+                    <br />
+                  </span>
+                  <span t-field="doc.cie" />
                 </div>
               </div>
               <table>
@@ -84,9 +93,11 @@
               </table>
               <style>
                 table {
+
                 width: 100%;
                 border: none;
                 }
+
                 th, td {
                 padding: 5px;
                 text-align: center;
@@ -110,6 +121,7 @@
                 }
               </style>
               <div>
+
               </div>
             </div>
           </t>
@@ -117,17 +129,15 @@
       </t>
     </template>
 
-      <record id="view_partner_form_form" model="ir.ui.view">
-    <field name="name">res.partner.form</field>
-    <field name="model">res.partner</field>
-    <field name="inherit_id" ref="base.view_partner_form" />
-    <field name="arch" type="xml">
-      <field name='vat' position='after'>
-        <field name='cie' />
+    <record id="view_partner_form_form" model="ir.ui.view">
+      <field name="name">res.partner.form</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form" />
+      <field name="arch" type="xml">
+        <field name='vat' position='after'>
+          <field name='cie' />
+        </field>
       </field>
-    </field>
-  </record>
+    </record>
   </data>
-
-
 </odoo>

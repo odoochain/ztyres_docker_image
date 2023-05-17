@@ -52,6 +52,11 @@ class SaleOrder(models.Model):
     
     
     def write(self, values):
+        # if self._table in ['sale_order']:
+        #     for sale in self:
+        #         for picking in sale.picking_ids:
+        #             if picking.x_studio_embarque:
+        #                 raise UserError('No se pueden modificar cantidades en un traslado %s embarcado %s'%(picking.name,picking.x_studio_embarque.x_name))            
         res = super().write(values)        
         if values.get("order_line") is not None:
             # self.order_line.check_price_not_in_zero()
@@ -106,6 +111,8 @@ class SaleOrder(models.Model):
             'context' : {'sale_id':self}
         }        
     
+
+
 
 
 
