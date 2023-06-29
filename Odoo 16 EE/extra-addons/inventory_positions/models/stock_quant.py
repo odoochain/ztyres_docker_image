@@ -33,9 +33,9 @@ class StockQuant(models.Model):
         unreserve = self.env.context.get('unreserve') or False
         if not unreserve:
             ids = []
-            # for record in quants:
-            #     if record.location_id.vender:
-            #         ids.append(record.id)
+            for record in quants:
+                # if record.location_id.vender:
+                ids.append(record.id)
             quants = self.browse(ids)
             if quants:
                 quants = quants.sorted(key=lambda r: r.location_id.distance,reverse=order_reverse)
