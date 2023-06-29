@@ -11,7 +11,7 @@
                     <field name="pos_z"/>
                     <field name="pos_y"/>
                     <field name="distance"/>
-                    <field name="vender"/>
+                    <!-- <field name="vender"/> -->
                 </group>
                 </field>
             </field>

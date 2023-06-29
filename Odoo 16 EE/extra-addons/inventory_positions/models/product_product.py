@@ -4,26 +4,26 @@ from odoo.osv import expression
 class Product(models.Model):
     _inherit = "product.product"
 
-    def _get_domain_locations_new_custom(self, location_ids):
-        locations = self.env['stock.location'].browse(location_ids)
-        # TDE FIXME: should move the support of child_of + auto_join directly in expression
-        loc_domain, dest_loc_domain = [], []
-        # this optimizes [('location_id', 'child_of', locations.ids)]
-        # by avoiding the ORM to search for children locations and injecting a
-        # lot of location ids into the main query
-        for location in locations:
-            loc_domain = loc_domain and ['|'] + loc_domain or loc_domain
-            loc_domain.append(('location_id.parent_path', '=like', location.parent_path + '%'))
-            loc_domain.append(('location_id.vender','=',True))
-            dest_loc_domain = dest_loc_domain and ['|'] + dest_loc_domain or dest_loc_domain
-            dest_loc_domain.append(('location_dest_id.parent_path', '=like', location.parent_path + '%'))
-            dest_loc_domain.append(('location_id.vender','=',True))
+    # def _get_domain_locations_new_custom(self, location_ids):
+    #     locations = self.env['stock.location'].browse(location_ids)
+    #     # TDE FIXME: should move the support of child_of + auto_join directly in expression
+    #     loc_domain, dest_loc_domain = [], []
+    #     # this optimizes [('location_id', 'child_of', locations.ids)]
+    #     # by avoiding the ORM to search for children locations and injecting a
+    #     # lot of location ids into the main query
+    #     for location in locations:
+    #         loc_domain = loc_domain and ['|'] + loc_domain or loc_domain
+    #         loc_domain.append(('location_id.parent_path', '=like', location.parent_path + '%'))
+    #         loc_domain.append(('location_id.vender','=',True))
+    #         dest_loc_domain = dest_loc_domain and ['|'] + dest_loc_domain or dest_loc_domain
+    #         dest_loc_domain.append(('location_dest_id.parent_path', '=like', location.parent_path + '%'))
+    #         dest_loc_domain.append(('location_id.vender','=',True))
 
-        return (
-            loc_domain,
-            dest_loc_domain + ['!'] + loc_domain if loc_domain else dest_loc_domain,
-            loc_domain + ['!'] + dest_loc_domain if dest_loc_domain else loc_domain
-        )
+    #     return (
+    #         loc_domain,
+    #         dest_loc_domain + ['!'] + loc_domain if loc_domain else dest_loc_domain,
+    #         loc_domain + ['!'] + dest_loc_domain if dest_loc_domain else loc_domain
+    #     )
         
         
     def _get_domain_locations(self):
@@ -69,5 +69,5 @@ class Product(models.Model):
             else:
                 location_ids = set(Warehouse.search([]).mapped('view_location_id').ids)
         context = bool(self.env.context.get('qty_custom')) or False
-        res = self._get_domain_locations_new(location_ids) if context==1 else self._get_domain_locations_new_custom(location_ids)
+        res = self._get_domain_locations_new(location_ids) #if context==1 else self._get_domain_locations_new_custom(location_ids)
         return res

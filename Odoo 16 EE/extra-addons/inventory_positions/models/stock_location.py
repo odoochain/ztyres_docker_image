@@ -12,7 +12,7 @@ class StockLocation(models.Model):
     distance = fields.Float(string='Distancia',readonly=True,
     digits=(16, 5)
     )
-    vender = fields.Boolean(string="Vender", default=True)
+    # vender = fields.Boolean(string="Vender", default=True)
     @api.depends('pos_x', 'pos_y', 'pos_z')
     def _compute_name(self):
         for location in self:
