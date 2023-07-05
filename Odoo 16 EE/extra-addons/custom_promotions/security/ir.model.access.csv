@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_custom_promotions_tier,Custom Promotions Tier Model Access,model_custom_promotions_tier,custom_promotions.group_promotions_admin,1,1,1,0
+access_custom_promotions_marca,Custom Promotions Marca Model Access,model_custom_promotions_marca,custom_promotions.group_promotions_admin,1,1,1,0
+access_custom_promotions_medida,Custom Promotions Medida Model Access,model_custom_promotions_medida,custom_promotions.group_promotions_admin,1,1,1,0
+access_custom_promotions_promocion,Custom Promotions Promocion Model Access,model_custom_promotions_promocion,custom_promotions.group_promotions_admin,1,1,1,0
+access_custom_promotions_promocion_salesman,Custom Promotions Promocion Salesman Model Access,model_custom_promotions_promocion,base.group_user,1,0,0,0

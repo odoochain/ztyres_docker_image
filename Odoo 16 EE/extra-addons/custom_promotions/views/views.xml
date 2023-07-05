@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- Vista del formulario -->
+    <record id="view_promocion_form" model="ir.ui.view">
+      <field name="name">promocion.form</field>
+      <field name="model">custom_promotions.promocion</field>
+      <field name="arch" type="xml">
+        <form string="Promoción">
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="clave_promocion" readonly="0" />
+              </h1>
+            </div>
+            <group align="center">
+              <field name="fecha_desde" />
+              <field name="fecha_hasta" />
+              <field name="volumen" string="Volumen" />
+              <field name="terminos_pago_id" string="Términos de Pago" widget="many2many_tags" />
+            </group>
+            <div class="oe_structure">
+              <div class="oe_row">
+                <div class="oe_col-4">
+                  <label for="porcentaje" string="Porcentaje de descuento en NC: " />
+                  <field name="porcentaje" id="porcentaje" />
+                  <label for="llanta_gratis" string="Llanta de Mejor Precio Gratis: " />
+                  <field name="llanta_gratis" id="llanta_gratis" />
+                  <label for="suma_politica_comercial" string="Suma a Política Comercial: " />
+                  <field name="suma_politica_comercial" id="suma_politica_comercial" />
+                </div>
+                <separator string="" />
+                <div class="oe_col-4">
+                  <label for="tier_ids" string="Tiers: " />
+                  <field name="tier_ids" id="tier_ids" widget="many2many_tags" />
+                </div>
+                <div class="oe_col-4">
+                  <label for="product_ids" string="Productos Participantes: " />
+                  <field name="product_ids" id="product_ids" widget="many2many" />
+                </div>
+                <div class="oe_col-4">
+                  <label for="marca_id" string="Marcas Participantes: " />
+                  <field name="marca_id" id="marca_id" widget="many2many" />
+                </div>
+                <div class="oe_col-4">
+                  <label for="medida_id" string="Medidas Participantes: " />
+                  <field name="medida_id" id="medida_id" widget="many2many" />
+                </div>
+              </div>
+            </div>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Vista de lista -->
+    <record id="view_promocion_tree" model="ir.ui.view">
+      <field name="name">promocion.tree</field>
+      <field name="model">custom_promotions.promocion</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="clave_promocion" />
+          <field name="volumen" />
+
+        </tree>
+      </field>
+    </record>
+
+    <!-- Acción para el modelo 'custom_promotions.promocion' -->
+    <record model="ir.actions.server" id="action_promocion">
+      <field name="name">Promociones por Periodo</field>
+      <field name="model_id" ref="model_custom_promotions_promocion" />
+      <field name="state">code</field>
+      <field name="code">action = model.get_action()</field>
+    </record>
+
+    <!-- Menú padre -->
+    <menuitem id="menu_custom_promotions" name="Promociones" action="action_promocion" 
+    groups="custom_promotions.group_promotions_admin"
+     sequence="10" 
+     web_icon="custom_promotions,static/description/icon.png"
+     />
+
+    <!-- Heredar la vista de formulario -->
+    <record id="view_order_form_inherit" model="ir.ui.view">
+      <field name="name">sale.view_order_form.inherit</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form" />
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='sale_header']" position="after">
+        <h2>Promociones</h2>
+          <field name="promocion_id">
+          </field>
+        </xpath>
+      </field>
+    </record>
+
+
+  </data>
+</odoo>
