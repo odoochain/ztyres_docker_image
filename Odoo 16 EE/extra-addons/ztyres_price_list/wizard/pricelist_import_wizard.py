@@ -40,6 +40,8 @@ class ImportCustomerWizard(models.TransientModel):
                 wb = openpyxl.load_workbook(filename=BytesIO(base64.b64decode(self.file)), read_only=True)
                 ws = wb.active                
                 for record in ws.iter_rows(min_row=2, max_row=None, min_col=None,max_col=None, values_only=True):
+                    if record[0]=='2268673':
+                        print('Err')
                    #TODO Usar filtered para mejorar el performance
                     product_tmpl_id = False
                     domain = [('pricelist_id','in',[self.pricelist_ids.id])]
@@ -60,9 +62,10 @@ class ImportCustomerWizard(models.TransientModel):
                     domain.append(('product_tmpl_id','in',product_tmpl_id.ids))               
                     product = self.pricelist_ids.item_ids.search(domain)
                     if product and self.options == 'delete':
-                        if len(product) == 1:
                             product.unlink()
-                            continue                                                
+                            continue
+                    if not product:
+                        continue                                        
                     if product:
                         product.fixed_price = float(record[1])                                    
                     else:    
