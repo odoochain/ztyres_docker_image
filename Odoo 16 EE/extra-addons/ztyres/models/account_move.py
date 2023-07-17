@@ -26,7 +26,7 @@ class AccountMove(models.Model):
                 if sum(move.invoice_payment_term_id.line_ids.mapped('days')) > 0:
                     move.l10n_mx_edi_payment_policy = 'PPD'
                 else:
-                    move.l10n_mx_edi_payment_policy = 'PUE'
+                    move.l10n_mx_edi_payment_policy = 'PPD'
             elif move.move_type == 'out_refund':
                 move.l10n_mx_edi_payment_policy = 'PUE'
             else:
