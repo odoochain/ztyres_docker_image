@@ -1,5 +1,8 @@
 #!/bin/bash
-
+# service ssh start
+# service ssh status
+# chsh -s /bin/bash odoo
+# echo 'odoo:ztyres' | chpasswd
 set -e
 
 if [ -v PASSWORD_FILE ]; then

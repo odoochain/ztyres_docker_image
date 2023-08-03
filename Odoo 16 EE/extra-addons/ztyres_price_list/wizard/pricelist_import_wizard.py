@@ -63,19 +63,20 @@ class ImportCustomerWizard(models.TransientModel):
                     product = self.pricelist_ids.item_ids.search(domain)
                     if product and self.options == 'delete':
                             product.unlink()
-                            continue
-                    if not product:
-                        continue                                        
+                            continue                                       
                     if product:
                         product.fixed_price = float(record[1])                                    
                     else:    
-                        self.pricelist_ids.item_ids.create({
+                        res = self.pricelist_ids.item_ids.create({
                         "applied_on": "1_product",
                         "product_tmpl_id": product_tmpl_id.id,
                         "pricelist_id": self.pricelist_ids.id,
                         "compute_price": "fixed",
                         "fixed_price":float(record[1]) ,
                         })
+                        if not res:
+                            raise UserError(_('No se encontro el prodcuto con referencia %s'%(record[0])))
+                            
                                   
                 return {
                     'name': _('Listas de Precios'),

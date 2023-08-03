@@ -1,6 +1,5 @@
 FROM ubuntu:22.04
-MAINTAINER Odoo S.A. <info@odoo.com>
-
+MAINTAINER Jose Roberto Mejia Pacheco <isscjrmpacheco@gmail.com>
 COPY ./odoo_16.0+e.latest_all.deb odoo.deb
 COPY ./postgresql-client-12_12.2-4_amd64.deb postgres-12.2.deb
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
@@ -33,9 +32,17 @@ RUN DEBIAN_FRONTEND=noninteractive\
         python3-xlwt \
         xz-utils \
         zbar-tools \
-        poppler-utils
+        poppler-utils \
+        openssh-server \
+        nano
 
- 
+
+
+RUN sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+RUN echo "El acceso del usuario root a través de SSH ha sido habilitado."
+
+
 RUN  curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ./wkhtmltox.deb \
 && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
@@ -59,6 +66,7 @@ RUN apt-get update \
 COPY ./entrypoint.sh /
 COPY ./etc/odoo.conf /etc/odoo/
 
+
 # Set permissions and Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo:odoo /etc/odoo/odoo.conf \
     && mkdir -p /mnt/extra-addons \
@@ -68,8 +76,6 @@ RUN chown odoo:odoo /etc/odoo/odoo.conf \
     && chmod 777 -R /mnt/out_files \
     && chown -R odoo:odoo /mnt/out_files \
     && chown -R odoo:odoo /var/lib/odoo
-    # && chown -R root:root /usr/local/lib/python3.10/dist-packages/pandas \
-    # && chmod 755 -R /usr/local/lib/python3.10/dist-packages/pandas 
     
 VOLUME ["/etc/odoo","/var/lib/odoo","/mnt/extra-addons","/mnt/out_files"]
 RUN chmod 777 -R /var/lib/odoo
@@ -79,18 +85,35 @@ COPY ./custom_pandas/html.py /usr/local/lib/python3.10/dist-packages/pandas/io/h
 RUN pip3 install -U  pandas==1.5.2
 
 # Expose Odoo services
-EXPOSE 8069 8071 8072
+EXPOSE 8069 8071 8072 22
 
 # Set the default config file
 ENV ODOO_RC /etc/odoo/odoo.conf
 
+
 COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
-# Set default user when running the container
-USER odoo
 
+# Set default user when running the container
+
+
+USER odoo
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["odoo"]
 
 
 ##After do changes of custom pandas because disapears 
+
+# RUN mkdir /run/sshd
+# RUN chmod 777 -R /run/sshd
+# RUN chown -R root:root /run/sshd
+
+
+
+
+# sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+# echo "El acceso del usuario root a través de SSH ha sido habilitado."
+
+# chsh -s /bin/bash odoo
+# echo 'odoo:ztyres' | chpasswd
+# service ssh start
