@@ -36,7 +36,7 @@ RUN DEBIAN_FRONTEND=noninteractive\
         poppler-utils \
         unixodbc
 
-
+RUN apt-get install -y lsb-release
 RUN  curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb \
 && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ./wkhtmltox.deb \
 && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
@@ -47,6 +47,21 @@ COPY ./requeriments.txt requeriments.txt
 RUN pip3 install -r requeriments.txt
 
 RUN npm install -g rtlcss
+
+RUN if ! echo "16.04 18.04 20.04 22.04" | grep -q "$(lsb_release -rs)"; then \
+        echo "Ubuntu $(lsb_release -rs) is not currently supported." && \
+        exit 1; \
+    fi
+RUN echo "Holaaaa"
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc
+RUN curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list | tee /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
+RUN ACCEPT_EULA=Y apt-get install -y mssql-tools
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+RUN source ~/.bashrc
+RUN apt-get install -y unixodbc-dev
 
 # Install Odoo
 RUN apt-get update \
