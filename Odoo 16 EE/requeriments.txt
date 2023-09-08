@@ -8,3 +8,5 @@ pyzbar
 pdf2image
 hermetrics
 fpdf==1.7.2
+pyodbc
+sqlalchemy
