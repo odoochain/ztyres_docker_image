@@ -67,22 +67,6 @@ class SaleOrderLine(models.Model):
                 product_currency = self.order_id.currency_id
             )     
 
-
-
-
-    
-    # def check_price_not_in_zero(self):
-    #     for record in self:
-    #         if record.price_unit == 0 or record.price_unit < 1:
-    #             raise UserError('No puede continuar con productos con precio $0   %s documento origen %s'%(record.name,record.order_id.name))
-
-
-
-
-    
-
-
-
     def _ztyres_action_launch_stock_rule(self, previous_product_uom_qty=False):
        
         """
@@ -128,3 +112,30 @@ class SaleOrderLine(models.Model):
         if procurements:
             self.env['procurement.group'].run(procurements)
         return True
+
+
+    @api.onchange('product_uom_qty', 'product_id')
+    def _onchange_check_product_availability(self):
+        for product in self:
+            if product.product_id.detailed_type == 'product' and product.product_uom_qty:            
+                if product.product_uom_qty > product.product_id.free_qty:
+                    warning_msg = {
+                        'title': _('¡Inventario insuficiente!'),
+                        'message': _('Estás intentando vender %s de %s pero solo tienes %s disponibles (después de considerar otras reservaciones).') % (product.product_uom_qty, product.product_id.name, product.product_id.free_qty)
+                    }
+                    return {'warning': warning_msg}
+
+
+    @api.constrains('price_unit')
+    def _constrains_check_price(self):
+        for product in self:
+            if float(product.price_unit) == 0.0:
+                raise ValidationError(_('El producto %s tiene precio de 0.0') % product.product_id.name)
+
+    @api.constrains('product_uom_qty')
+    def _constrains_check_product_availability(self):
+        for record in self:
+            if record.product_id.detailed_type == 'product' and record.product_uom_qty:
+                if record.product_uom_qty > record.product_id.free_qty:
+                    raise ValidationError(_('Estás intentando vender %s de %s pero solo tienes %s disponibles (después de considerar otras reservaciones).') % (record.product_uom_qty, record.product_id.name, record.product_id.free_qty))
+                

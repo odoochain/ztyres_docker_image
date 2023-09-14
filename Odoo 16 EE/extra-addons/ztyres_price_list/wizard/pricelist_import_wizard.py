@@ -40,42 +40,40 @@ class ImportCustomerWizard(models.TransientModel):
                 wb = openpyxl.load_workbook(filename=BytesIO(base64.b64decode(self.file)), read_only=True)
                 ws = wb.active                
                 for record in ws.iter_rows(min_row=2, max_row=None, min_col=None,max_col=None, values_only=True):
-                    if record[0]=='2268673':
-                        print('Err')
-                   #TODO Usar filtered para mejorar el performance
-                    product_tmpl_id = False
-                    domain = [('pricelist_id','in',[self.pricelist_ids.id])]
-                    if self.upload_options == 'name':
-                            add_domain = (('name','in',[str(record[0])]))                            
-                            product_tmpl_id = self.pricelist_ids.item_ids.product_tmpl_id.search([add_domain])
-                    elif self.upload_options == 'code':
-                        add_domain = (('default_code','in',[str(record[0])]))                            
-                        product_tmpl_id = self.pricelist_ids.item_ids.product_tmpl_id.search([add_domain])                           
-                    elif self.upload_options == 'id':
-                            add_domain = (('id','in',[int(record[0])]))                            
-                            product_tmpl_id = self.pricelist_ids.item_ids.product_tmpl_id.search([add_domain])
-                            
-                    if not product_tmpl_id:
-                        raise UserError(_('El producto que desea subir no existe %s'%(record[0])))
-                    if len(product_tmpl_id)>1:
-                        raise UserError(_('El producto se encuentra duplicado %s'%(record[0])))
-                    domain.append(('product_tmpl_id','in',product_tmpl_id.ids))               
-                    product = self.pricelist_ids.item_ids.search(domain)
-                    if product and self.options == 'delete':
-                            product.unlink()
-                            continue                                       
-                    if product:
-                        product.fixed_price = float(record[1])                                    
-                    else:    
-                        res = self.pricelist_ids.item_ids.create({
-                        "applied_on": "1_product",
-                        "product_tmpl_id": product_tmpl_id.id,
-                        "pricelist_id": self.pricelist_ids.id,
-                        "compute_price": "fixed",
-                        "fixed_price":float(record[1]) ,
-                        })
-                        if not res:
-                            raise UserError(_('No se encontro el prodcuto con referencia %s'%(record[0])))
+                    if record[0] and  record[1]:                    
+                   #    TODO Usar filtered para mejorar el performance
+                        product_tmpl_id = False
+                        domain = [('pricelist_id','in',[self.pricelist_ids.id])]
+                        if self.upload_options == 'name':
+                                add_domain = (('name','in',[str(record[0])]))                            
+                                product_tmpl_id = self.pricelist_ids.item_ids.product_tmpl_id.search([add_domain])
+                        elif self.upload_options == 'code':
+                            add_domain = (('default_code','in',[str(record[0])]))                            
+                            product_tmpl_id = self.pricelist_ids.item_ids.product_tmpl_id.search([add_domain])                           
+                        elif self.upload_options == 'id':
+                                add_domain = (('id','in',[int(record[0])]))                            
+                                product_tmpl_id = self.pricelist_ids.item_ids.product_tmpl_id.search([add_domain])
+                        if not product_tmpl_id:
+                            raise UserError(_('El producto que desea subir no existe %s'%(record[0])))
+                        if len(product_tmpl_id)>1:
+                            raise UserError(_('El producto se encuentra duplicado %s'%(record[0])))
+                        domain.append(('product_tmpl_id','in',product_tmpl_id.ids))               
+                        product = self.pricelist_ids.item_ids.search(domain)
+                        if product and self.options == 'delete':
+                                product.unlink()
+                                continue                                       
+                        if product:
+                            product.fixed_price = float(record[1])                                    
+                        else:    
+                            res = self.pricelist_ids.item_ids.create({
+                            "applied_on": "1_product",
+                            "product_tmpl_id": product_tmpl_id.id,
+                            "pricelist_id": self.pricelist_ids.id,
+                            "compute_price": "fixed",
+                            "fixed_price":float(record[1]) ,
+                            })
+                            if not res:
+                                raise UserError(_('No se encontro el prodcuto con referencia %s'%(record[0])))
                             
                                   
                 return {
@@ -89,3 +87,5 @@ class ImportCustomerWizard(models.TransientModel):
                     # search if the price exist else create
         except Exception as e:
             raise UserError(_('El archivo no es válido %s'%(e)))
+        
+#/mnt/extra-addons/ztyres_price_list/wizard/pricelist_import_wizard.py

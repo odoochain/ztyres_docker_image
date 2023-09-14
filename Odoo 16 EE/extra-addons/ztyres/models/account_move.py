@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api,_
+from odoo.exceptions import ValidationError, UserError
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -9,7 +10,12 @@ class AccountMove(models.Model):
     partner_credit_limit = fields.Float(related='partner_id.credit_limit', readonly=True)
     partner_credit_amount_overdue = fields.Monetary(related='partner_id.credit_amount_overdue', readonly=True)
     
-    
+    def unlink(self):
+        for move in self:
+            if move.l10n_mx_edi_cfdi_uuid:
+                raise UserError(_('No puedes eliminar una factura que fue timbrada.'))
+        return super(AccountMove, self).unlink()
+
     def _compute_show_partner_credit_alert(self):
         for order in self:
             order.show_partner_credit_alert = True

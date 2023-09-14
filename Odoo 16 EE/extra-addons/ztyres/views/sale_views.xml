@@ -9,7 +9,9 @@
                 <field name="arch" type="xml">
                       <field name='payment_term_id' position='before'>
                         <field name='payment_term_days' invisible='1' /> 
-                        
+                      </field>
+                      <field name='delivery_status' position='before'>
+                        <field name='keep'/> 
                       </field>
                       <field name='payment_term_id' position='attributes'>
                         <attribute name="readonly">True</attribute>     
@@ -71,6 +73,31 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="ir_cron_cancel_old_quotation_picking" model="ir.cron">
+            <field name="name">Cancel Old Quotation Picking</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">model.cancel_old_quotation_picking()</field>
+        </record>
+
+        <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                    <field name="unlock_financial" groups="ztyres.sale_exceptions_group"/>
+                </xpath>
+            </field>
+        </record>
+
 
     </data>
 </odoo>

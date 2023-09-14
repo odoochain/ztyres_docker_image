@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api,_
+from odoo.exceptions import ValidationError, UserError
 
 
 
@@ -11,7 +12,15 @@ class ResPartner(models.Model):
     credt_limit_available = fields.Monetary(compute='_compute_credt_limit_available', string='Crédito Disponible')
     credit_amount_overdue = fields.Monetary(compute='_compute_credt_limit_available', string='Saldo Vencido')
     credit_limit = fields.Float(string='Límite de Crédito',tracking=True)
-    
+
+    @api.depends('vat')
+    def _check_vat_unique(self):
+        for record in self:
+            if record.type not in ['delivery','other','private']:
+                if record.vat:  # Esta línea se asegura de que el vat no esté vacío
+                    duplicate = self.env['res.partner'].search([('vat', '=', record.vat), ('id', '!=', record.id)], limit=1)
+                    if duplicate:
+                        raise ValidationError(_("El Número de Identificación Fiscal (VAT) ya está registrado con otro contacto."))
 
     def _compute_credt_limit_used(self):
         for partner in self:
