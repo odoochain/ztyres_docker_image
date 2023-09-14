@@ -27,6 +27,18 @@
             </record>
         </data>
 
+        <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                    <field name="unlock_financial" groups="ztyres.sale_exceptions_group"/>
+                    <field name="allowed_product_ids" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
 
         <record id="ztyres.view_order_tree_inherit_sale_approve" model="ir.ui.view">
             <field name="name">Sale Tree</field>
@@ -44,18 +56,27 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
+
+        <xpath expr="//field[@name='order_line']" position="attributes">
+            <attribute name="context">{'allowed_product_ids': allowed_product_ids}</attribute>
+        </xpath>
+
                 <xpath expr="/form/header[last()]" position="inside">
                     <button name="quotation_action_confirm" type="object" class="fa-refresh" string="Actualizar entrega"/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
-                    <attribute name="domain">[('qty_available', '>', 0)]</attribute>
+                <attribute name="domain">[('id', 'in', context.get('allowed_product_ids', []))]</attribute>
+                <!-- <attribute name="domain">[('id', 'in', parent.allowed_product_ids.ids)]</attribute> -->
+                    <!-- <attribute name="domain">[('qty_available', '>', 0)]</attribute> -->
                 </xpath>
-                <!-- <xpath expr="//field[@name='order_line']" position="attributes">
-                    <attribute name="attrs">{'readonly': ['|',('approve_state', 'in', ('confirm')),('state', 'in', ('done','cancel','sale'))]}</attribute>
-                </xpath> -->
             </field>
         </record>
 
+<!-- <attribute name="domain">['|',('qty_available', '>', 0), ("type", "=", "service"),('id', 'in', [11592])]</attribute> -->
+
+  <!-- <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/field[@name='product_id']" position="attributes">
+    <attribute name="domain">["|",["qty_available","&gt;",0],["type","in",["service"]]]</attribute>
+  </xpath> -->
         <record id="view_order_form" model="ir.ui.view">
             <field name="name">sale.order.form</field>
             <field name="model">sale.order</field>
@@ -87,16 +108,6 @@
             <field name="code">model.cancel_old_quotation_picking()</field>
         </record>
 
-        <record id="view_order_form_inherit" model="ir.ui.view">
-            <field name="name">sale.order.form.inherit</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_order_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                    <field name="unlock_financial" groups="ztyres.sale_exceptions_group"/>
-                </xpath>
-            </field>
-        </record>
 
 
     </data>

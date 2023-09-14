@@ -20,55 +20,13 @@ from odoo.tools import  float_compare
 from odoo.exceptions import UserError
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'    
+    pricelist_id = fields.Many2one(comodel_name='product.pricelist', string='Lista de Precios Original')
+
+
 
     dot_range = fields.Char(related='product_id.dot_range')
 
-    def get_low_price(self):
-        pricelist_item = self.env['product.pricelist.item']
-        low_price = 0
-        for line in self:
-            print(line.product_id.product_tmpl_id.ids)
-            pricelist_items = pricelist_item.search([('product_tmpl_id','in',line.product_id.product_tmpl_id.ids),('pricelist_id.exclude_from_sale','in',[False]),('pricelist_id.active','in',[True])],order="fixed_price asc",limit=1)
-            for product in pricelist_items:
-                print(product.fixed_price,product.pricelist_id.name)
-            if pricelist_items:
-                low_price = pricelist_items.fixed_price
-                line.price_unit = pricelist_items.fixed_price
-        return low_price  
-    
-    @api.onchange('product_id','product_uom', 'product_uom_qty')
-    def product_uom_change(self):
-        if not self.product_uom or not self.product_id:
-            self.price_unit = 0.0
-            return
-        if self.order_id.pricelist_id and self.order_id.partner_id:
-            product = self.product_id.with_context(
-                lang=self.order_id.partner_id.lang,
-                partner=self.order_id.partner_id,
-                quantity=self.product_uom_qty,
-                date=self.order_id.date_order,
-                pricelist=self.order_id.pricelist_id.id,
-                uom=self.product_uom.id,
-                fiscal_position=self.env.context.get('fiscal_position')
-            )
-
-            price = 0
-            if not self._origin.price_unit > 0:
-                price = self.get_low_price()
-            else:
-                price = self._origin.price_unit
-            self.price_unit = product._get_tax_included_unit_price(
-                self.company_id,
-                self.order_id.currency_id,
-                self.order_id.date_order,
-                'sale',
-                fiscal_position = self.order_id.fiscal_position_id,
-                product_price_unit = price,#self._get_display_price(product),
-                product_currency = self.order_id.currency_id
-            )     
-
     def _ztyres_action_launch_stock_rule(self, previous_product_uom_qty=False):
-       
         """
         Launch procurement group run method with required/custom fields genrated by a
         sale order line. procurement group will launch '_run_pull', '_run_buy' or '_run_manufacture'
@@ -114,8 +72,16 @@ class SaleOrderLine(models.Model):
         return True
 
 
+    
+    @api.onchange('product_id')
+    def _onchange_product_id_set_pricelist(self):
+        if self.product_id:
+            self.pricelist_id = self.order_id.pricelist_id
+    
+    
     @api.onchange('product_uom_qty', 'product_id')
     def _onchange_check_product_availability(self):
+        
         for product in self:
             if product.product_id.detailed_type == 'product' and product.product_uom_qty:            
                 if product.product_uom_qty > product.product_id.free_qty:

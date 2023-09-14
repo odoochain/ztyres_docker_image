@@ -18,9 +18,26 @@ class SaleOrder(models.Model):
     payment_term_days = fields.Integer(compute='_compute_payment_term_days',string='Días de Crédito')
     keep = fields.Boolean(string='Mantener Pedido de Venta', default=False)
     unlock_financial = fields.Boolean(string='Excepcion de pedido', default=False)
+
+    allowed_product_ids = fields.Many2many(
+        'product.product', 
+        compute='_compute_allowed_product_ids', 
+        store=False
+    )
+
+
+    @api.depends('pricelist_id')
+    def _compute_allowed_product_ids(self):
+        for order in self:
+            items = order.pricelist_id.item_ids.product_tmpl_id.mapped('product_variant_id')
+            services = self.env['product.product'].search([('id','in',[50959])])
+            order.allowed_product_ids = services + items
+            print(order.allowed_product_ids )
+
     def copy(self, default=None):
         # Agregar codigo de validacion aca
         raise UserError(_('No es posible duplicar un pedido de Venta'))
+        
 
     def _lock_credit_warning_message(self,updated_credit):
         ''' Build the warning message that will be displayed in a yellow banner on top of the current record
@@ -116,7 +133,17 @@ class SaleOrder(models.Model):
                 self.quotation_action_confirm()                                        
         return res
     
+
+    @api.onchange('pricelist_id')
+    def onchange_pricelist_id(self):
+        self.note = self.pricelist_id.terms
+    
+    
     def action_confirm(self):
+        price_list_ids = self.order_line.mapped('pricelist_id').ids
+        if not all(x == price_list_ids[0] for x in price_list_ids):
+            raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
+            
         if not self.payment_term_days > 0:
             if not self.x_studio_val_pago:
                 raise UserError("Por favor verifique con finanzas el pago anticipado.")
@@ -174,3 +201,4 @@ orders = self.env['sale.order'].search([('state','in',['done'])])
 for item in orders:
     item.with_context(tracking_disable=True).action_unlock()
 """
+
