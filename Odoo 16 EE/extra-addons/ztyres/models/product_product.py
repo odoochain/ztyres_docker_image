@@ -6,18 +6,6 @@ class Product(models.Model):
 
     dot_range = fields.Char(compute='_compute_dot_range', string='DOT')
 
-    # show_sale_line = fields.Boolean(compute='_compute_show_sale_line', string='Mostrar en Línea de Pedido',store=True)
-    
-    
-
-    # def _compute_show_sale_line(self):
-    #     for line in self:
-    #         pricelist_item = self.env['product.pricelist.item']
-    #         pricelist_items = pricelist_item.search([('pricelist_id','in',[line.order_id.pricelist_id.ids]),('product_tmpl_id','in',line.product_id.product_tmpl_id.ids)])
-    #         if pricelist_items:
-    #             return 1
-    #         else:
-    #             return 0
     def _compute_dot_range(self):
         product_lot = self.env['stock.lot']
         for record in self:

@@ -19,6 +19,15 @@ class SaleOrder(models.Model):
     keep = fields.Boolean(string='Mantener Pedido de Venta', default=False)
     unlock_financial = fields.Boolean(string='Excepcion de pedido', default=False)
 
+
+
+    def _prepare_invoice(self):
+        # Llamamos al método original para obtener el diccionario preparado
+        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+        # Copiamos los términos y condiciones del pedido de venta a la factura
+        invoice_vals['narration'] = self.note  # Asumiendo que `note` es el campo de términos y condiciones en sale.order
+        return invoice_vals
+    
     allowed_product_ids = fields.Many2many(
         'product.product', 
         compute='_compute_allowed_product_ids', 
@@ -109,21 +118,13 @@ class SaleOrder(models.Model):
 
     @api.model
     def create(self, values):        
-        #currentMonth = str(datetime.now().month).zfill(2)
-        # values.update({'month_promotion':currentMonth})
         print(values)
         result = super().create(values)
         result.quotation_action_confirm()
-        # result.order_line.check_price_not_in_zero()
         return result
     
     
-    def write(self, values):
-        # if self._table in ['sale_order']:
-        #     for sale in self:
-        #         for picking in sale.picking_ids:
-        #             if picking.x_studio_embarque:
-        #                 raise UserError('No se pueden modificar cantidades en un traslado %s embarcado %s'%(picking.name,picking.x_studio_embarque.x_name))            
+    def write(self, values):       
         res = super().write(values)        
         if values.get("order_line") is not None:
             # self.order_line.check_price_not_in_zero()
@@ -137,13 +138,15 @@ class SaleOrder(models.Model):
     @api.onchange('pricelist_id')
     def onchange_pricelist_id(self):
         self.note = self.pricelist_id.terms
-    
-    
+
     def action_confirm(self):
-        price_list_ids = self.order_line.mapped('pricelist_id').ids
-        if not all(x == price_list_ids[0] for x in price_list_ids):
-            raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
-            
+        #TODO Check this validation
+        # price_list_ids = self.order_line.mapped("pricelist_item_id").pricelist_id.ids
+        # if not all(x == price_list_ids[0] for x in price_list_ids):
+        #     raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
+        # if price_list_ids[0] != self.pricelist_id.id:
+        #     raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
+        
         if not self.payment_term_days > 0:
             if not self.x_studio_val_pago:
                 raise UserError("Por favor verifique con finanzas el pago anticipado.")
@@ -196,9 +199,4 @@ class SaleOrder(models.Model):
             'target': 'new',
             'context' : {'sale_id':self}
         }
-"""
-orders = self.env['sale.order'].search([('state','in',['done'])])
-for item in orders:
-    item.with_context(tracking_disable=True).action_unlock()
-"""
 
