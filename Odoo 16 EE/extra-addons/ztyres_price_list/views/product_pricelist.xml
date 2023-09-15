@@ -8,7 +8,7 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
         <xpath expr="//field[@name='pricelist_id']" position="attributes">
-            <attribute name="domain">[('exclude_from_export_lists', '=', False)]</attribute>
+            <attribute name="domain">[('exclude_from_order', '=', False)]</attribute>
         </xpath>
     </field>
 </record>

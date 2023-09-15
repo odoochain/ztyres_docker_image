@@ -18,8 +18,23 @@ class SaleOrder(models.Model):
     payment_term_days = fields.Integer(compute='_compute_payment_term_days',string='Días de Crédito')
     keep = fields.Boolean(string='Mantener Pedido de Venta', default=False)
     unlock_financial = fields.Boolean(string='Excepcion de pedido', default=False)
+    pricelist_locked = fields.Boolean(string="Lista de precios bloqueada", default=False)
 
-
+    @api.onchange('pricelist_id')
+    def _check_pricelist_locked(self):
+        # Si pricelist_locked es True, entonces se ha establecido una lista de precios anteriormente
+        if self.pricelist_locked:
+            # Se restaura el valor anterior para prevenir el cambio
+            self.pricelist_id = self._origin.pricelist_id
+            return {
+                'warning': {
+                    'title': _("Advertencia!"),
+                    'message': _("Una vez seleccionada, no puedes cambiar la lista de precios, se restaurará a la lista seleccionada inicialmente."),
+                }
+            }
+        else:
+            # Se bloquea la lista de precios para futuros cambios
+            self.pricelist_locked = True
 
     def _prepare_invoice(self):
         # Llamamos al método original para obtener el diccionario preparado
@@ -41,7 +56,6 @@ class SaleOrder(models.Model):
             items = order.pricelist_id.item_ids.product_tmpl_id.mapped('product_variant_id')
             services = self.env['product.product'].search([('id','in',[50959])])
             order.allowed_product_ids = services + items
-            print(order.allowed_product_ids )
 
     def copy(self, default=None):
         # Agregar codigo de validacion aca
@@ -80,7 +94,6 @@ class SaleOrder(models.Model):
             ('state', 'in', ['draft']),('keep', '!=',True),
             ('create_date', '<=', five_days_ago)
         ])
-        print(old_quotations)
         for order in old_quotations:
             # Cancela los documentos relacionados de stock.picking
             try:
@@ -118,9 +131,9 @@ class SaleOrder(models.Model):
 
     @api.model
     def create(self, values):        
-        print(values)
         result = super().create(values)
         result.quotation_action_confirm()
+        
         return result
     
     
@@ -134,6 +147,16 @@ class SaleOrder(models.Model):
                 self.quotation_action_confirm()                                        
         return res
     
+    @api.onchange('order_line')
+    def validate_same_pricelist(self):
+        if self.order_line:
+            price_list_ids = self.order_line.mapped("pricelist_id").ids
+            if not all(x == price_list_ids[0] for x in price_list_ids):
+                raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
+            if price_list_ids[0] != self.pricelist_id.id:
+                raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
+        
+    
 
     @api.onchange('pricelist_id')
     def onchange_pricelist_id(self):
@@ -141,12 +164,8 @@ class SaleOrder(models.Model):
 
     def action_confirm(self):
         #TODO Check this validation
-        # price_list_ids = self.order_line.mapped("pricelist_item_id").pricelist_id.ids
-        # if not all(x == price_list_ids[0] for x in price_list_ids):
-        #     raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
-        # if price_list_ids[0] != self.pricelist_id.id:
-        #     raise UserError("Las líneas del pedido no corresponden a la misma lista de precio, por favor verifiquelas.")
         
+
         if not self.payment_term_days > 0:
             if not self.x_studio_val_pago:
                 raise UserError("Por favor verifique con finanzas el pago anticipado.")
@@ -181,7 +200,6 @@ class SaleOrder(models.Model):
         for order in self:
             unpaid_invoices = order.partner_id._ztyres_compute_unpaid_invoices()
             balance_for_followup = order.partner_id._ztyres_compute_for_followup() 
-        print(unpaid_invoices,balance_for_followup)  
         return (unpaid_invoices,balance_for_followup)
     
 
