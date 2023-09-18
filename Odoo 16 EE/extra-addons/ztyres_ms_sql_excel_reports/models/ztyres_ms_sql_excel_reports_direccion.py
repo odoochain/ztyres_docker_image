@@ -274,9 +274,12 @@ class MyModel(models.TransientModel):
             'x_studio_uso',
             'x_studio_posicionamiento',
             'qty_available',
-            'outgoing_qty'
+            'x_studio_disponible'
             ]
         return self.env['product.template'].search_read([('detailed_type','in',['product'])], fields=desired_fields)
+
+
+
 
     def dict_to_df(self,dict):
         df = pd.DataFrame(dict)

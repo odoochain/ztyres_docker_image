@@ -9,7 +9,7 @@ from PIL import Image
 from pyzbar.pyzbar import decode
 from pdf2image import convert_from_bytes
 from hermetrics.damerau_levenshtein import DamerauLevenshtein
-from ..scripts.csf_to_dict  import get_data_csf
+from ..scripts.csf_to_dict  import get_csf_data_from_url
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -39,23 +39,54 @@ class ResPartner(models.Model):
         #Takes the first image
         images = convert_from_bytes(bytes)
         return images[0]
+
+    def validate_partner_fields(self,partner):
+        """
+        Validate if all fields of partner have a value.
         
+        :param partner: The partner object to validate.
+        :return: A list of field names that don't have values.
+        """
+
+        # Define the fields that you want to check
+        fields_to_check = [
+            'state_id',
+            'city_id',
+            'country_id',
+            'street',
+            'vat',
+            'zip',
+            'name',
+            'l10n_mx_edi_fiscal_regime',
+            'csf_uploaded'
+        ]
+        
+        # Identify fields without values
+        empty_fields = [field for field in fields_to_check if not getattr(partner, field)]
+
+        return empty_fields
+
+    # Using the function in your existing method
     def update_partner_from_csf(self):
         self.get_csf_link()
         for rec in self:
             if not rec.csf:
                 raise UserError('Por favor agregue información válida')
-            data = get_data_csf(rec.csf)
+            data = get_csf_data_from_url(rec.csf)
             partner = self.get_id_by_vat(data.get('vat'))
             partner.state_id = self.get_state_id(data.get('state_id'))
-            partner.city_id = self.get_city_id_id(data.get('city_id'),partner.state_id.id)        
-            partner.country_id = self.get_country_id('México')            
+            partner.city_id = self.get_city_id_id(data.get('city_id'), partner.state_id.id)
+            partner.country_id = self.get_country_id('México')
             partner.street = data.get('street')
             partner.vat = data.get('vat')
             partner.zip = data.get('zip')
             partner.name = data.get('name')
             partner.l10n_mx_edi_fiscal_regime = self.get_fiscal_regime_value(data.get('l10n_mx_edi_fiscal_regime'))
             partner.csf_uploaded = 'done'
+            # Validate partner fields
+            missing_fields = self.validate_partner_fields(partner)
+            if missing_fields:
+                raise UserError(f"Los siguientes campos no tienen valores: {', '.join(missing_fields)}")
     
     def existing_csf_attachment(self):
         attachment = self.env['ir.attachment']
@@ -103,14 +134,21 @@ class ResPartner(models.Model):
         self.check_record(res)
         return res.id
     
-    def get_near_fiscal_regime(self,fiscal_regime):
+    def get_near_fiscal_regime(self, fiscal_regimes):
         fiscal_regime_values = self._fields['l10n_mx_edi_fiscal_regime'].args['selection']
-        key_distance = {}
+        valid_regimes =['601','603','606','612','620','621','622','623','624','625','626']
+        max_similitude = 0
+        max_key = None
         for rec in fiscal_regime_values:
-            distance = DamerauLevenshtein.distance(self,fiscal_regime,rec[1])
-            percent_similitude = 100-(distance * 100)/len(rec[1])
-            key_distance.update({rec[0]:percent_similitude})
-        return max(key_distance, key=key_distance.get)
+            if rec[0] in valid_regimes:
+                for regime in fiscal_regimes:                    
+                    distance = DamerauLevenshtein.distance(self, regime, rec[1])
+                    percent_similitude = 100 - (distance * 100) / len(rec[1])
+                    if percent_similitude > max_similitude:
+                        max_similitude = percent_similitude
+                        max_key = rec[0]
+        return max_key
+
         
     def get_fiscal_regime_value(self,fiscal_regime):
         return self.get_near_fiscal_regime(fiscal_regime)
